@@ -231,9 +231,12 @@ public class ProfileServiceScannerRegistrar implements ImportBeanDefinitionRegis
     }
 
     /**
-     * @param filterAttributes
-     * @return
+     * 根据注解,转换拦截属性
+     *
+     * @param filterAttributes 注解信息
+     * @return 拦截列表
      */
+    @SuppressWarnings("unchecked")
     private List<TypeFilter> typeFiltersFor(AnnotationAttributes filterAttributes) {
         List<TypeFilter> typeFilters = new ArrayList<TypeFilter>();
         FilterType filterType = filterAttributes.getEnum("type");
@@ -263,8 +266,10 @@ public class ProfileServiceScannerRegistrar implements ImportBeanDefinitionRegis
     }
 
     /**
-     * @param classes
-     * @return
+     * 通过class获取包名数组
+     *
+     * @param classes class属性数组
+     * @return 获取到的包名数组
      */
     private String[] getPackagesFromClasses(Class[] classes) {
         if (ObjectUtils.isEmpty(classes)) {
@@ -274,7 +279,9 @@ public class ProfileServiceScannerRegistrar implements ImportBeanDefinitionRegis
         for (Class<?> clazz : classes) {
             basePackages.add(ClassUtils.getPackageName(clazz));
         }
-        return (String[]) basePackages.toArray();
+        String[] basePackage = new String[basePackages.size()];
+        basePackage = basePackages.toArray(basePackage);
+        return basePackage;
     }
 
     /**
@@ -350,15 +357,6 @@ public class ProfileServiceScannerRegistrar implements ImportBeanDefinitionRegis
         return beanClass.getAnnotation(ProfileService.class).registerBean();
     }
 
-    /**
-     * 获取ProfileService注解内容,判断是否需要注册到SpringBean容器中
-     *
-     * @param beanClass 类信息
-     * @return 是否需要注册到Spring容器的标记
-     */
-   /* private String registerSpringBeanName(Class<?> beanClass) {
-        return beanClass.getAnnotation(ProfileService.class).value();
-    }*/
 
     /**
      * 获取Profile-Service类对象

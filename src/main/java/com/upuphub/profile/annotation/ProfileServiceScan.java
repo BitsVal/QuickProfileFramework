@@ -18,7 +18,7 @@ import java.lang.annotation.*;
 @Import(ProfileServiceScannerRegistrar.class)
 public @interface ProfileServiceScan {
     /**
-     * 邮箱指定类
+     * 标记指定类
      */
     String[] value() default {};
 

@@ -12,7 +12,11 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ClassUtils;
 
-
+/**
+ * @author Leo Wang
+ * @version 1.0
+ * @date 2019/10/15 19:59
+ */
 public class ProfileServiceTypeFilter extends AbstractClassTestingTypeFilter {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileServiceTypeFilter.class);
     @Override
@@ -31,8 +35,10 @@ public class ProfileServiceTypeFilter extends AbstractClassTestingTypeFilter {
     }
 
     /**
-     * @param className
-     * @return
+     * 转换类名到类的Class对象
+     *
+     * @param className 类的全类名
+     * @return 转换后的类的实例对象
      */
     private Class<?> transformToClass(String className) {
         Class<?> clazz = null;
@@ -45,8 +51,10 @@ public class ProfileServiceTypeFilter extends AbstractClassTestingTypeFilter {
     }
 
     /**
-     * @param clazz
-     * @return
+     * 判断是否包含Spring原生的自动注入注解
+     *
+     * @param clazz 注解类Class对象
+     * @return 是否是原生Spring对象的判断结果
      */
     private boolean isAnnotatedBySpring(Class<?> clazz) {
         return clazz.isAnnotationPresent(Component.class) || clazz.isAnnotationPresent(Configuration.class)
