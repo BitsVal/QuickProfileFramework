@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.SpringProxy;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
@@ -32,7 +33,7 @@ public class ProfileBeanPostProcessor extends InstantiationAwareBeanPostProcesso
     @Override
     public void afterPropertiesSet() throws Exception {
     }
-
+/*
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         if (bean instanceof ProfileSpringProviderBean && isScanBuildGeneratedProfileBean(beanName)) {
@@ -46,6 +47,20 @@ public class ProfileBeanPostProcessor extends InstantiationAwareBeanPostProcesso
             //((ProfileSpringProviderBean)bean).prepare();
         }
         return bean;
+    }*/
+
+    @Override
+    public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) throws BeansException {
+        if (beanClass.equals(ProfileSpringProviderBean.class) && isScanBuildGeneratedProfileBean(beanName)) {
+
+            Class<?> underlyingClass = ProfileServiceScannerRegistrar.getUnderlyingClass(beanName);
+            Object underlyingBean = beanFactory.getBean(underlyingClass);
+/*            ((ProfileSpringProviderBean)bean).setService(underlyingBean);
+            ((ProfileSpringProviderBean)bean).setServiceInterface(underlyingClass.getInterfaces()[0]);
+            ((ProfileSpringProviderBean)bean).prepare();*/
+
+        }
+        return super.postProcessBeforeInstantiation(beanClass, beanName);
     }
 
     /**
