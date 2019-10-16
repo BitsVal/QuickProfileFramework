@@ -1,8 +1,10 @@
 package com.upuphub.profile.loader;
 
-import java.lang.reflect.InvocationHandler;
+import com.upuphub.profile.annotation.ProfileLoader;
+import com.upuphub.profile.annotation.ProfileService;
+import com.upuphub.profile.utils.ObjectUtil;
+
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,29 +13,45 @@ import java.util.Map;
  * @version 1.0
  * @date 2019/10/15 19:59
  */
-public class ProfileSpringProviderBean implements InvocationHandler {
-    private Object service;
-    private Class<?> serviceInterface;
 
-    @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        //在真实的对象执行之前我们可以添加自己的操作
-        System.out.println("before invoke。。。");
-        Object invoke = method.invoke(service, args);
-        //在真实的对象执行之后我们可以添加自己的操作
-        System.out.println("after invoke。。。");
-        return invoke;
+
+public class ProfileSpringProviderBean{
+    private String serviceName;
+    private Object target;
+    private Map<String, Method> methodMap = new HashMap();
+
+    public void setTarget(Object underlyingBean) {
+        this.target = underlyingBean;
     }
 
-    public void setService(Object underlyingObject) {
-        this.service =underlyingObject;
+    public void setServiceInterface(Class<?> serviceClass) {
+        for (Method serviceClassMethod : serviceClass.getMethods()) {
+            ProfileLoader profileLoader = serviceClassMethod.getAnnotation(ProfileLoader.class);
+            if(ObjectUtil.isEmpty(profileLoader) || ObjectUtil.isEmpty(profileLoader.value())){
+                methodMap.put(serviceClassMethod.getName(),serviceClassMethod);
+            }else {
+                methodMap.put(profileLoader.value(),serviceClassMethod);
+            }
+        }
     }
 
-    public void setServiceInterface(Class<?> serviceInterface) {
-        this.serviceInterface = serviceInterface;
+    public String getServiceName() {
+        return serviceName;
     }
 
-    public void prepare(){
-        Proxy.newProxyInstance(this.service.getClass().getClassLoader(), new Class[]{serviceInterface},this);
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    public Object getTarget() {
+        return target;
+    }
+
+    public Map<String, Method> getMethodMap() {
+        return methodMap;
+    }
+
+    public void setMethodMap(Map<String, Method> methodMap) {
+        this.methodMap = methodMap;
     }
 }

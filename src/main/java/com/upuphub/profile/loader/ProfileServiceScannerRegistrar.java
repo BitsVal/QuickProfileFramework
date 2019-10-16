@@ -2,7 +2,6 @@ package com.upuphub.profile.loader;
 
 import com.upuphub.profile.annotation.ProfileService;
 import com.upuphub.profile.annotation.ProfileServiceScan;
-import com.upuphub.profile.exception.ProfileGenericLoaderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;

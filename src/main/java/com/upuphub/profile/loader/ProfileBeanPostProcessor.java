@@ -1,18 +1,14 @@
 package com.upuphub.profile.loader;
 
+import com.upuphub.profile.annotation.ProfileService;
+import com.upuphub.profile.utils.ObjectUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.aop.SpringProxy;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
-import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessorAdapter;
-import org.springframework.cglib.proxy.Enhancer;
-import org.springframework.cglib.proxy.MethodInterceptor;
 
 
 /**
@@ -24,6 +20,7 @@ public class ProfileBeanPostProcessor extends InstantiationAwareBeanPostProcesso
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileBeanPostProcessor.class);
 
     private BeanFactory beanFactory;
+    private ProfileGeneralManager profileGeneralManager;
 
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
@@ -32,35 +29,25 @@ public class ProfileBeanPostProcessor extends InstantiationAwareBeanPostProcesso
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        // 执行加载
+        profileGeneralManager = beanFactory.getBean(ProfileGeneralManager.class);
     }
-/*
+
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         if (bean instanceof ProfileSpringProviderBean && isScanBuildGeneratedProfileBean(beanName)) {
-
             Class<?> underlyingClass = ProfileServiceScannerRegistrar.getUnderlyingClass(beanName);
             Object underlyingBean = beanFactory.getBean(underlyingClass);
-            System.out.println(this.getClass().getName() + ".postProcessBeforeInstantiation()被调用 了...");
-            return super.postProcessBeforeInstantiation(underlyingClass, beanName);
-            //((ProfileSpringProviderBean)bean).setService(underlyingBean);
-            //((ProfileSpringProviderBean)bean).setServiceInterface(underlyingClass.getInterfaces()[0]);
-            //((ProfileSpringProviderBean)bean).prepare();
+            ((ProfileSpringProviderBean) bean).setTarget(underlyingBean);
+            ((ProfileSpringProviderBean) bean).setServiceInterface(underlyingClass.getInterfaces()[0]);
+            ProfileService profileService = underlyingClass.getAnnotation(ProfileService.class);
+            if(ObjectUtil.isEmpty(profileService) || ObjectUtil.isEmpty(profileService.value())){
+                profileGeneralManager.setProfileSpringProviderBeans(underlyingClass.getInterfaces()[0].getSimpleName(),(ProfileSpringProviderBean) bean);
+            }else {
+                profileGeneralManager.setProfileSpringProviderBeans(profileService.value(),(ProfileSpringProviderBean) bean);
+            }
         }
         return bean;
-    }*/
-
-    @Override
-    public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) throws BeansException {
-        if (beanClass.equals(ProfileSpringProviderBean.class) && isScanBuildGeneratedProfileBean(beanName)) {
-
-            Class<?> underlyingClass = ProfileServiceScannerRegistrar.getUnderlyingClass(beanName);
-            Object underlyingBean = beanFactory.getBean(underlyingClass);
-/*            ((ProfileSpringProviderBean)bean).setService(underlyingBean);
-            ((ProfileSpringProviderBean)bean).setServiceInterface(underlyingClass.getInterfaces()[0]);
-            ((ProfileSpringProviderBean)bean).prepare();*/
-
-        }
-        return super.postProcessBeforeInstantiation(beanClass, beanName);
     }
 
     /**
