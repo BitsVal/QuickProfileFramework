@@ -1,11 +1,5 @@
+/*
 package com.upuphub.profile.component;
-
-import cc.itsc.account.annotation.TransParam;
-import cc.itsc.account.exception.ProfileTransferException;
-import cc.itsc.account.service.ProfileTransService;
-import cc.itsc.account.utils.ObjectUtil;
-import cc.itsc.utils.common.JsonHelper;
-import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -14,22 +8,26 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+*/
 /**
  * @author Leo Wang
  * @version 1.0
  * @date 2019/9/17 21:46
- */
+ *//*
+
 
 @Slf4j
 public class ProfileReflectUtil {
 
     private static final ProfileTransService PROFILE_TRANS_METHOD = new ProfileTransService();
 
-    /**
+    */
+/**
      * 根据方法名称，获取方法需要的参数属性
      * @param methodName 方法名称
      * @return 调用该方法需要的参数
-     */
+     *//*
+
     public static List<String> getTransferParamsByMethod(String methodName){
         List<String> transferParams = new LinkedList<>();
             Method reflectMethod = ProfileManager.name2Method.get(methodName);
@@ -50,12 +48,14 @@ public class ProfileReflectUtil {
             return transferParams;
     }
 
-    /**
+    */
+/**
      * 反射调用实现方法
      * @param method 方法名称
      * @param params 方法存在的参数集合
      * @return 处理后的结果
-     */
+     *//*
+
     public static Object invokeByMethod(String method, Map<String, String> params){
         try {
             Method reflectMethod = ProfileManager.name2Method.get(method);
@@ -120,3 +120,4 @@ public class ProfileReflectUtil {
         }
     }
 }
+*/

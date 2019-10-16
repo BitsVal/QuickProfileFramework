@@ -1,4 +1,4 @@
-package com.upuphub.profile.service;
+package com.upuphub.profile.test.service;
 
 /**
  * @author Leo Wang

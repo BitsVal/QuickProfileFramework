@@ -1,46 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+
 <profiles>
-    <original DBType = "MongoDB">
+    <original method = "MongoDBService.pullProfile">
         <profile key="name" type="String" readonly="false" verify="true" default="微露用户" description="用户姓名" deprecated="false" />
-        <profile key="backgroundImage" type="String" readonly="false" verify="true" default=""  description="用户头像背景图像" deprecated="false"/>
-        <profile key="country" type="String" readonly="false" default=""  description="用户所在国家" deprecated="false"/>
-        <profile key="province" type="String" readonly="false"  default="" description="用户所在省" deprecated="false" />
-        <profile key="district" type="String" readonly="false" default=""  description="用户所在县/区" deprecated="false"/>
-        <profile key="city" type="String" readonly="false" default=""  description="用户所在城市" deprecated="false"/>
-        <profile key="street" type="String" readonly="false" default=""  description="用户所在街道" deprecated="false"/>
         <profile key="birthday" type="Long" readonly="false" default=""  description="用户生日" deprecated="false"/>
-        <profile key="profession" type="String" readonly="false" default="" description="用户职业" deprecated="false" />
-        <profile key="gender" type="String" readonly="false" default=""  description="用户性别" deprecated="false"/>
-        <profile key="signature" type="String" readonly="false" default=""  description="用户个性签名" deprecated="false"/>
-        <profile key="level" type="Integer" readonly="false" default="1"  description="用户等级" deprecated="false"/>
-        <profile key="aboutMe" type="String" readonly="false" default="" description="用户个人信息" deprecated="false" />
-        <profile key="school" type="String" readonly="false"  default=""  description="用户学校" deprecated="false"/>
-        <profile key="company" type="String" readonly="false" default=""  description="用户公司" deprecated="false"/>
-        <profile key="degree" type="String" readonly="false" default=""  description="用户学历" deprecated="false"/>
-        <profile key="language" type="String" readonly="false" default=""  description="语言" deprecated="false"/>
-        <profile key="longitude" type="Double" readonly="false" default=""  description="经度" deprecated="false"/>
-        <profile key="latitude" type="Double" readonly="false" default=""  description="纬度" deprecated="false"/>
-
-        <profile key="completelyRegistrationFlag" type="Boolean" readonly="false" default="false"  description="完成注册标记" deprecated="false"/>
     </original>
 
-    <original DBType = "Mysql">
+    <original method = "MysqlProfileService.pullProfile">
         <profile key="email" type="string" readonly="true" buildMethod="fetchEmail" description="账号邮箱地址" deprecated="false"/>
-        <profile key="flagEmailVerify" type="string" readonly="true" buildMethod="fetchEmail" description="邮箱验证状态" deprecated="false"/>
     </original>
-
-<!--    应用所特有的属性,放在实际的应用中
-    <original keyPrefix = "setting_">
-        <profile key="appTheme" type="String" readonly="false" default="default" description="应用主题" deprecated="false" />
-        <profile key="guide" type="Boolean" readonly="false"  default="true"  description="是否需要开启新手引导" deprecated="false"/>
-        <profile key="newMessageNotify" type="Boolean" readonly="false" default="true"  description="新消息通知" deprecated="false"/>
-        <profile key="voiceNotify" type="Boolean" readonly="false"  default="true" description="声音通知开关" deprecated="false" />
-        <profile key="antiDisturbance" type="Boolean" readonly="false" default="true"  description="防打扰开关"  ="false"/>
-    </original>
-    -->
 
     <transfer>
-        <!--  基本属性拓展 -->
         <profile key="age" type="int" readonly="true"  transMethod="birthToAge" description="计算实际年龄"/>
     </transfer>
 

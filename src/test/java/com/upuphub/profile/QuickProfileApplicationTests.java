@@ -1,7 +1,8 @@
 package com.upuphub.profile;
 
-import com.upuphub.profile.service.HelloQuickProfile;
-import com.upuphub.profile.service.HiQuickProfile;
+import com.upuphub.profile.loader.ProfileSpringProviderBean;
+import com.upuphub.profile.test.service.HelloQuickProfile;
+import com.upuphub.profile.test.service.HiQuickProfile;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,10 @@ public class QuickProfileApplicationTests {
     @Autowired
     HiQuickProfile hiQuickProfile;
 
+
     @Test
     public void contextLoads() {
         helloQuickProfile.sayHello();
         hiQuickProfile.inString("Hello World");
     }
-
 }

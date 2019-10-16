@@ -1,7 +1,7 @@
-package com.upuphub.profile.service.impl;
+package com.upuphub.profile.test.service.impl;
 
 import com.upuphub.profile.annotation.ProfileService;
-import com.upuphub.profile.service.HelloQuickProfile;
+import com.upuphub.profile.test.service.HelloQuickProfile;
 
 /**
  * @author Leo Wang

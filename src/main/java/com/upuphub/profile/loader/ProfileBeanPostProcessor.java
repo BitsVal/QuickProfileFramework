@@ -1,10 +1,17 @@
 package com.upuphub.profile.loader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.aop.SpringProxy;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessorAdapter;
+import org.springframework.cglib.proxy.Enhancer;
+import org.springframework.cglib.proxy.MethodInterceptor;
 
 
 /**
@@ -13,6 +20,7 @@ import org.springframework.beans.factory.config.InstantiationAwareBeanPostProces
  * @date 2019/10/15 19:59
  */
 public class ProfileBeanPostProcessor extends InstantiationAwareBeanPostProcessorAdapter implements InitializingBean, BeanFactoryAware {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileBeanPostProcessor.class);
 
     private BeanFactory beanFactory;
 
@@ -31,8 +39,11 @@ public class ProfileBeanPostProcessor extends InstantiationAwareBeanPostProcesso
 
             Class<?> underlyingClass = ProfileServiceScannerRegistrar.getUnderlyingClass(beanName);
             Object underlyingBean = beanFactory.getBean(underlyingClass);
-            ((ProfileSpringProviderBean)bean).setTarget(underlyingBean);
-            ((ProfileSpringProviderBean)bean).setServiceInterface(underlyingClass.getInterfaces()[0].getName());
+            System.out.println(this.getClass().getName() + ".postProcessBeforeInstantiation()被调用 了...");
+            return super.postProcessBeforeInstantiation(underlyingClass, beanName);
+            //((ProfileSpringProviderBean)bean).setService(underlyingBean);
+            //((ProfileSpringProviderBean)bean).setServiceInterface(underlyingClass.getInterfaces()[0]);
+            //((ProfileSpringProviderBean)bean).prepare();
         }
         return bean;
     }

@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @date 2019/10/15 19:59
  */
 
-@ProfileServiceScan(basePackages = "com.upuphub.profile.service")
+@ProfileServiceScan(basePackages = "com.upuphub.profile.test.service")
 @SpringBootApplication
 public class QuickProfileApplication {
 
