@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.upuphub.profile</groupId>
-    <artifactId>quick_profile</artifactId>
+    <artifactId>QuickProfileFramework</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>QuickProfileFramework</name>
     <description>QuickProfileFramework</description>
