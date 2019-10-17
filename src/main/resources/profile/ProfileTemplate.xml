@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<profiles>
+
+    <original service = "ProfileMongoService" selectMethod = "pullProfile">
+        <profile key="name" type="String" readonly="false" verify="true" default="微露用户" description="用户姓名" />
+        <profile key="birthday" type="Long" readonly="false" default=""  description="用户生日"/>
+    </original>
+
+
+    <original service = "ProfileMysqlService" selectMethod = "pullAccountStatus">
+        <profile key="email" type="String" readonly="true" description="账号邮箱地址"/>
+    </original>
+
+
+    <transfer service = "ProfileTransferService">
+        <profile key="age" type="Integer" readonly="true"  transMethod="birthToAge" description="计算实际年龄"/>
+    </transfer>
+
+</profiles>

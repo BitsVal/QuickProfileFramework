@@ -16,7 +16,7 @@ import java.util.Map;
 public class ProfileMongoServiceImpl implements ProfileMongoService {
 
     @Override
-    public Map<String, Object> pullProfile(long uin, List<String> profileKeys) {
+    public Map<String, Object> pullProfile(Long uin, List<String> profileKeys) {
         return null;
     }
 }

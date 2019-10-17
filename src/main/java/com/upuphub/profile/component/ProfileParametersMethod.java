@@ -6,7 +6,7 @@ import java.util.Objects;
  * @version 1.0
  * @date 2019/10/16 00:06
  */
-public class ProfileOriginalMethod {
+public class ProfileParametersMethod {
     private String serviceName;
     private String selectMethod;
     private String insertMethod;
@@ -56,8 +56,8 @@ public class ProfileOriginalMethod {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ProfileOriginalMethod)) return false;
-        ProfileOriginalMethod that = (ProfileOriginalMethod) o;
+        if (!(o instanceof ProfileParametersMethod)) return false;
+        ProfileParametersMethod that = (ProfileParametersMethod) o;
         return Objects.equals(getServiceName(), that.getServiceName()) &&
                 Objects.equals(getSelectMethod(), that.getSelectMethod()) &&
                 Objects.equals(getInsertMethod(), that.getInsertMethod()) &&

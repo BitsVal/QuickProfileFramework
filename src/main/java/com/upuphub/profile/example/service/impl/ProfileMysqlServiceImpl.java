@@ -15,7 +15,7 @@ import java.util.Map;
 public class ProfileMysqlServiceImpl implements ProfileMysqlService {
 
     @Override
-    public Map<String, Object> pullAccountStatus(long uin) {
+    public Map<String, Object> pullAccountStatus(Long uin) {
         return null;
     }
 }
