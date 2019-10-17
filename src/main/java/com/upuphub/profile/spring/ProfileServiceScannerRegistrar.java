@@ -1,4 +1,4 @@
-package com.upuphub.profile.loader;
+package com.upuphub.profile.spring;
 
 import com.upuphub.profile.annotation.ProfileService;
 import com.upuphub.profile.annotation.ProfileServiceScan;

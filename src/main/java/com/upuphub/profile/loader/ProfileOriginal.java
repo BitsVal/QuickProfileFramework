@@ -1,4 +1,4 @@
-package com.upuphub.profile.component;
+package com.upuphub.profile.loader;
 
 /**
  * @author Leo Wang

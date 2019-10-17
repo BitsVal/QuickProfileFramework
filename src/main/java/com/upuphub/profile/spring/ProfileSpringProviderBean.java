@@ -1,7 +1,6 @@
-package com.upuphub.profile.loader;
+package com.upuphub.profile.spring;
 
 import com.upuphub.profile.annotation.ProfileLoader;
-import com.upuphub.profile.annotation.ProfileService;
 import com.upuphub.profile.exception.ProfileMethodNotFoundException;
 import com.upuphub.profile.utils.ObjectUtil;
 

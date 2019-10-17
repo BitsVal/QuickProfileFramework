@@ -1,6 +1,6 @@
 package com.upuphub.profile.annotation;
 
-import com.upuphub.profile.loader.ProfileServiceScannerRegistrar;
+import com.upuphub.profile.spring.ProfileServiceScannerRegistrar;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 

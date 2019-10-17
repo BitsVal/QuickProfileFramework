@@ -1,7 +1,6 @@
-package com.upuphub.profile.loader;
+package com.upuphub.profile.spring;
 
 import com.upuphub.profile.exception.ProfileBeanNotFoundException;
-import org.springframework.stereotype.Component;
 
 
 import java.util.HashMap;
