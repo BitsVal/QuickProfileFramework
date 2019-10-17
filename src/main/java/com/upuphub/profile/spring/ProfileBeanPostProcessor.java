@@ -1,6 +1,7 @@
 package com.upuphub.profile.spring;
 
 import com.upuphub.profile.annotation.ProfileService;
+import com.upuphub.profile.reflect.ProfileMethodHandler;
 import com.upuphub.profile.utils.ObjectUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +53,14 @@ public class ProfileBeanPostProcessor extends InstantiationAwareBeanPostProcesso
             }
         }
         return bean;
+    }
+
+    @Override
+    public boolean postProcessAfterInstantiation(Object bean, String beanName) throws BeansException {
+        if(bean instanceof ProfileMethodHandler){
+            ((ProfileMethodHandler) bean).setProfileGeneralServiceManager(profileGeneralServiceManager);
+        }
+        return super.postProcessAfterInstantiation(bean, beanName);
     }
 
     /**

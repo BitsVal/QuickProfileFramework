@@ -18,7 +18,11 @@ import java.util.Map;
 public class ProfileSpringProviderBean{
     private String serviceName;
     private Object target;
-    private Map<String,Method> methodMap = new HashMap();
+    private Map<String,Method>  profileMethodMap;
+
+    public ProfileSpringProviderBean() {
+        this.profileMethodMap = new HashMap<>();
+    }
 
     public void setTarget(Object underlyingBean) {
         this.target = underlyingBean;
@@ -28,15 +32,15 @@ public class ProfileSpringProviderBean{
         for (Method serviceClassMethod : serviceClass.getMethods()) {
             ProfileLoader profileLoader = serviceClassMethod.getAnnotation(ProfileLoader.class);
             if(ObjectUtil.isEmpty(profileLoader) || ObjectUtil.isEmpty(profileLoader.value())){
-                methodMap.put(serviceClassMethod.getName(),serviceClassMethod);
+                profileMethodMap.put(serviceClassMethod.getName(),serviceClassMethod);
             }else {
-                methodMap.put(profileLoader.value(),serviceClassMethod);
+                profileMethodMap.put(profileLoader.value(),serviceClassMethod);
             }
         }
     }
     public Method getServiceMethod(String methodName) {
-        if(methodMap.containsKey(methodName)){
-            return methodMap.get(methodName);
+        if(profileMethodMap.containsKey(methodName)){
+            return profileMethodMap.get(methodName);
         }else{
             throw new ProfileMethodNotFoundException(String.format("[%s.%s] Profile Method Not Found",serviceName,methodName));
         }
@@ -56,6 +60,13 @@ public class ProfileSpringProviderBean{
     }
 
     public Map<String, Method> getMethodMap() {
-        return methodMap;
+        return profileMethodMap;
+    }
+
+    public Method getMethodByMethodName(String methodName){
+        if(profileMethodMap.containsKey(methodName)){
+            return profileMethodMap.get(methodName);
+        }
+        return null;
     }
 }

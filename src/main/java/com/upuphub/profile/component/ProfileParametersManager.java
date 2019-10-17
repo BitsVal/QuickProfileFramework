@@ -1,6 +1,7 @@
 package com.upuphub.profile.component;
 
 import com.upuphub.profile.exception.ProfileDefinitionException;
+import com.upuphub.profile.reflect.ProfileMethodHandler;
 import com.upuphub.profile.utils.ObjectUtil;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
@@ -54,6 +55,8 @@ public class ProfileParametersManager {
      */
     private InputStream xmlFileStream;
 
+    private ProfileMethodHandler profileMethodHandler;
+
     public ProfileParametersManager(String xmlPath) {
         try {
             if (ObjectUtil.isEmpty(xmlPath)) {
@@ -64,9 +67,14 @@ public class ProfileParametersManager {
             LOGGER.info("Load XML profile config succeed");
         } catch (Exception e) {
             LOGGER.error("Load XML profile config failed", e);
+        }finally {
+            xmlFileStream = null;
         }
     }
 
+    public void setProfileMethodHandler(ProfileMethodHandler profileMethodHandler) {
+        this.profileMethodHandler = profileMethodHandler;
+    }
 
     /**
      * 加载XMLProfile配置文件
@@ -200,4 +208,63 @@ public class ProfileParametersManager {
             profileDefinitionMapper.put(profileName, profileTransferDefinition);
         }
     }
+
+    /**
+     * 根据传入的KeyList获取Key对应的Key属性对象
+     *
+     * @param keys 用户传入的Key
+     * @return 查询到的Key属性对象集合
+     */
+    public  List<BaseProfileDefinition> getProfileDefinitionByKeys(List<String> keys) {
+        if (null == keys || keys.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<BaseProfileDefinition> baseProfileDefinitions = new ArrayList<>();
+        for (String key : keys) {
+            BaseProfileDefinition baseProfileDefinition = profileDefinitionMapper.get(key);
+            if (null == baseProfileDefinition) {
+                continue;
+            }
+            baseProfileDefinitions.add(baseProfileDefinition);
+        }
+        return baseProfileDefinitions;
+    }
+
+    /**
+     * 通过传入的Key,剥离出其中原始基本Key
+     *
+     * @param keys 需要操作的Keys
+     * @return 剥离出来的基本Key
+     */
+    public List<String> getOriginalKeysByKeys(List<String> keys) {
+        // 对传入的Key再次进行判空
+        if (null == keys || keys.isEmpty()) {
+            return Collections.emptyList();
+        }
+        // 准备基本的原始Key列表，利用HashSet防止出现重复的Key
+        Set<String> originalKeysSet = new HashSet<>();
+        // 遍历传入的Key
+        for (String key : keys) {
+            BaseProfileDefinition baseProfileDefinition = profileDefinitionMapper.get(key);
+            // 没有配置在设定中的Key中,直接跳过
+            if (null == baseProfileDefinition) {
+                continue;
+            }
+            // 如果key需要进行转换
+            if (baseProfileDefinition instanceof ProfileTransferDefinition) {
+                // 获取转换Key需要的初始参数到列表中
+                String tarnsMethod = ((ProfileTransferDefinition) baseProfileDefinition).getTransferMethod();
+                // 递归添加到需要的数组中(todo 可能会出现死锁,也可能会出现引用为空的情况出现)
+                originalKeysSet.addAll((getOriginalKeysByKeys(
+                        profileMethodHandler.getTransferParamsByMethod(
+                                profileParametersServiceBinder.get(baseProfileDefinition).getServiceName(),tarnsMethod))
+                ));
+            } else {
+                // 添加到List中
+                originalKeysSet.add(key);
+            }
+        }
+        return new ArrayList<>(originalKeysSet);
+    }
+
 }

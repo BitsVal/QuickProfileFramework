@@ -3,6 +3,7 @@ package com.upuphub.profile.reflect;
 import com.upuphub.profile.annotation.ProfileParam;
 import com.upuphub.profile.exception.ProfileBeanNotFoundException;
 import com.upuphub.profile.exception.ProfileMethodNotFoundException;
+import com.upuphub.profile.exception.ProfileTransferException;
 import com.upuphub.profile.spring.ProfileGeneralServiceManager;
 import com.upuphub.profile.spring.ProfileSpringProviderBean;
 import com.upuphub.profile.utils.ObjectUtil;
@@ -12,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class ProfileMethodHandler {
@@ -19,9 +22,10 @@ public class ProfileMethodHandler {
 
     private ProfileGeneralServiceManager profileGeneralServiceManager;
 
-    public ProfileMethodHandler(ProfileGeneralServiceManager profileGeneralServiceManager) {
+    public void setProfileGeneralServiceManager(ProfileGeneralServiceManager profileGeneralServiceManager) {
         this.profileGeneralServiceManager = profileGeneralServiceManager;
     }
+
 
     /**
      * 反射调用实现方法并返回执行结果
@@ -87,6 +91,27 @@ public class ProfileMethodHandler {
     }
 
 
+    public List<String> getTransferParamsByMethod(String serviceName, String tarnsMethod) {
+        List<String> transferParams = new LinkedList<>();
+        Method reflectMethod = profileGeneralServiceManager.getProfileSpringProviderBean(serviceName).getMethodMap().get(tarnsMethod);
+        if (null == reflectMethod) {
+            throw new ProfileTransferException(String.format("method [%s.%s] not found in ProfileTransService.class", serviceName,tarnsMethod));
+        }
+        Parameter[] parameters = reflectMethod.getParameters();
+        if (parameters.length > 0) {
+            for (Parameter parameter : parameters) {
+                ProfileParam transParam = parameter.getAnnotation(ProfileParam.class);
+                if (null != transParam) {
+                    transferParams.add(transParam.value());
+                } else if (!ObjectUtil.isEmpty(parameter.getName())) {
+                    transferParams.add(parameter.getName());
+                }
+            }
+        }
+        return transferParams;
+    }
+
+
     private Object transFromObjectType(Class<?> clz, Object param) {
         if (param.getClass().equals(clz)) {
             return param;
@@ -107,4 +132,6 @@ public class ProfileMethodHandler {
         }
         return param;
     }
+
+
 }

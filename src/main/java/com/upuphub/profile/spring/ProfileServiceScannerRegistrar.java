@@ -2,6 +2,7 @@ package com.upuphub.profile.spring;
 
 import com.upuphub.profile.annotation.ProfileService;
 import com.upuphub.profile.annotation.ProfileServiceScan;
+import com.upuphub.profile.reflect.ProfileMethodHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -199,11 +200,18 @@ public class ProfileServiceScannerRegistrar implements ImportBeanDefinitionRegis
      * @param registry Spring的注册管理器
      */
     private void registerProfileBeanMangerProcessor(BeanDefinitionRegistry registry){
-        String beanName = ClassUtils.getShortNameAsProperty(ProfileGeneralServiceManager.class);
-        if (!registry.containsBeanDefinition(beanName)) {
-            registry.registerBeanDefinition(beanName, new RootBeanDefinition(ProfileGeneralServiceManager.class));
+        String generalServiceName = ClassUtils.getShortNameAsProperty(ProfileGeneralServiceManager.class);
+        if (!registry.containsBeanDefinition(generalServiceName)) {
+            registry.registerBeanDefinition(generalServiceName, new RootBeanDefinition(ProfileGeneralServiceManager.class));
         }
-        LOGGER.debug("Load ProfileBeanMangerProcessor[{}] Success",beanName);
+        LOGGER.debug("Load ProfileBeanMangerProcessor[{}] Success",generalServiceName);
+        String profileMethodHandlerBeanName = ClassUtils.getShortNameAsProperty(ProfileMethodHandler.class);
+        if (!registry.containsBeanDefinition(profileMethodHandlerBeanName)) {
+            registry.registerBeanDefinition(profileMethodHandlerBeanName, new RootBeanDefinition(ProfileMethodHandler.class));
+        }
+        LOGGER.debug("Load ProfileBeanMangerProcessor[{}] Success",profileMethodHandlerBeanName);
+
+
     }
 
     /**
