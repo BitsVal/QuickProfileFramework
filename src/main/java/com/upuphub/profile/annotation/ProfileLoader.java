@@ -12,5 +12,4 @@ import java.lang.annotation.*;
 @Documented
 public @interface ProfileLoader {
     String value() default "";
-    String[] keys() default {};
 }

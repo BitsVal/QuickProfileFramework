@@ -36,7 +36,7 @@ public class ProfileMethodHandler {
      * @return 处理后的结果
      */
 
-    public Object invokeMethodByName(String serviceName, String methodName, Map<String, Object> params) {
+    public Object invokeMethodByName(String serviceName, String methodName, Map<String, Object> params,List<String> methodKeys) {
         try {
             ProfileSpringProviderBean profileProviderBean = profileGeneralServiceManager.getProfileSpringProviderBean(serviceName);
             if (ObjectUtil.isEmpty(profileProviderBean)) {
@@ -69,6 +69,9 @@ public class ProfileMethodHandler {
                         continue;
                     }
                     Object param = params.get(parameterName);
+                    if(ObjectUtil.isEmpty(param) && !ObjectUtil.isEmpty(transParam) && transParam.needKeys()){
+                        param = methodKeys;
+                    }
                     Class<?> clz = parameter.getType();
                     if (null != param) {
                         Object paramTransferred = transFromObjectType(clz, param);

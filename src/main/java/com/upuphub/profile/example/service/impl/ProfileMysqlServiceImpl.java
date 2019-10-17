@@ -3,6 +3,7 @@ package com.upuphub.profile.example.service.impl;
 import com.upuphub.profile.annotation.ProfileService;
 import com.upuphub.profile.example.service.ProfileMysqlService;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -16,6 +17,6 @@ public class ProfileMysqlServiceImpl implements ProfileMysqlService {
 
     @Override
     public Map<String, Object> pullAccountStatus(Long uin) {
-        return null;
+        return Collections.singletonMap("email","QuickProfile@upuphub.com");
     }
 }

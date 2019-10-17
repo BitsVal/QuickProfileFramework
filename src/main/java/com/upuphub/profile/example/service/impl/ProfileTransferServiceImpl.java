@@ -3,6 +3,7 @@ package com.upuphub.profile.example.service.impl;
 import com.upuphub.profile.annotation.ProfileService;
 import com.upuphub.profile.example.service.ProfileTransferService;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -15,6 +16,6 @@ import java.util.Map;
 public class ProfileTransferServiceImpl implements ProfileTransferService {
     @Override
     public Map<String, Object> birthToAge(Long birthday) {
-        return null;
+        return Collections.singletonMap("age",System.currentTimeMillis() - birthday);
     }
 }

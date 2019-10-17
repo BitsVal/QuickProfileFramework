@@ -2,7 +2,9 @@ package com.upuphub.profile.example.service.impl;
 
 import com.upuphub.profile.annotation.ProfileService;
 import com.upuphub.profile.example.service.ProfileMongoService;
+import com.upuphub.profile.utils.ObjectUtil;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +19,18 @@ public class ProfileMongoServiceImpl implements ProfileMongoService {
 
     @Override
     public Map<String, Object> pullProfile(Long uin, List<String> profileKeys) {
-        return null;
+        if(ObjectUtil.isEmpty(profileKeys)){
+            return null;
+        }
+        HashMap profileMap = new HashMap(profileKeys.size());
+        for (String profileKey : profileKeys) {
+            if("name".equals(profileKey)){
+                profileMap.put(profileKey,"QuickProfileTest");
+            }
+            if("birthday".equals(profileKey)){
+                profileMap.put(profileKey,System.currentTimeMillis());
+            }
+        }
+        return profileMap;
     }
 }

@@ -35,6 +35,13 @@ public class ProfileParametersManager {
      */
     private Map<String, BaseProfileDefinition> profileDefinitionMapper = new HashMap<>();
 
+
+    /**
+     * 每一个方法下的所有Keys
+     */
+    private Map<ProfileParametersMethod,Set<String>> profileParametersMethodKeys = new HashMap<>();
+
+
     /**
      * 需要验证的属性集合
      */
@@ -55,7 +62,9 @@ public class ProfileParametersManager {
      */
     private InputStream xmlFileStream;
 
+
     private ProfileMethodHandler profileMethodHandler;
+
 
     public ProfileParametersManager(String xmlPath) {
         try {
@@ -98,12 +107,15 @@ public class ProfileParametersManager {
                 ProfileParametersMethod profileParametersMethod = loadProfileParametersMethod(item);
                 String itemName = item.getName();
                 if (PROFILE_ELEMENT_ORIGINAL.equals(itemName) || PROFILE_ELEMENT_TRANSFER.equals(itemName)) {
+                    Set<String> profileKeys = new HashSet<>();
                     // 遍历每一个基础Profile节点元素
                     Iterator profileIter = item.elementIterator();
                     while (profileIter.hasNext()) {
                         // 加载配置文件的核心,执行加载属性
-                        loadCommonProfileDefinition((Element) profileIter.next(), itemName, profileParametersMethod);
+                        String profileKey = loadCommonProfileDefinition((Element) profileIter.next(), itemName, profileParametersMethod);
+                        profileKeys.add(profileKey);
                     }
+                    profileParametersMethodKeys.put(profileParametersMethod,profileKeys);
                 }
             }
             LOGGER.info("Profile init loading succeeded");
@@ -166,7 +178,7 @@ public class ProfileParametersManager {
      * @param itemName 节点种类
      * @param profileParametersMethod 节点根部对应的方法
      */
-    private void loadCommonProfileDefinition(Element profile, String itemName, ProfileParametersMethod profileParametersMethod) {
+    private String loadCommonProfileDefinition(Element profile, String itemName, ProfileParametersMethod profileParametersMethod) {
         // 读取Key的名字的和类型
         String profileName = profile.attribute(PROFILE_ATTRIBUTE_KEY).getValue();
         String profileType = profile.attribute(PROFILE_ATTRIBUTE_TYPE).getValue();
@@ -207,6 +219,7 @@ public class ProfileParametersManager {
             profileParametersServiceBinder.put(profileTransferDefinition, profileParametersMethod);
             profileDefinitionMapper.put(profileName, profileTransferDefinition);
         }
+        return profileName;
     }
 
     /**
@@ -265,5 +278,31 @@ public class ProfileParametersManager {
             }
         }
         return new ArrayList<>(originalKeysSet);
+    }
+
+    public BaseProfileDefinition getBaseProfileDefinitionByKey(String key) {
+        if(profileDefinitionMapper.containsKey(key)){
+            return profileDefinitionMapper.get(key);
+        }
+        return null;
+    }
+
+    public ProfileParametersMethod getProfileParametersMethodByDefinition(BaseProfileDefinition profileDefinition) {
+        if(profileParametersServiceBinder.containsKey(profileDefinition)){
+            return profileParametersServiceBinder.get(profileDefinition);
+        }
+        return null;
+    }
+
+    public Object invokeMethod(ProfileParametersMethod method,String methodName,Map<String,Object> params,List allKeys){
+        // 分理出需要在该方法中需要查询的Key
+        Set<String> paramsKeys = profileParametersMethodKeys.get(method);
+        List<String> keysList = new ArrayList<>();
+        paramsKeys.forEach(key->{
+            if(allKeys.contains(key)){
+                keysList.add(key);
+            }
+        });
+        return profileMethodHandler.invokeMethodByName(method.getServiceName(),methodName,params,keysList);
     }
 }

@@ -12,6 +12,12 @@ import java.util.Map;
  */
 
 public interface ProfileMysqlService {
+    /**
+     * 拉取Profile属性信息值
+     *
+     * @param uin Profile主键
+     * @return 查询到的结果Key-Value
+     */
     @ProfileLoader("pullAccountStatus")
     Map<String,Object> pullAccountStatus(@ProfileParam("uin") Long uin);
 }

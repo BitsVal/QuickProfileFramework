@@ -12,4 +12,5 @@ import java.lang.annotation.*;
 @Documented
 public @interface ProfileParam {
     String value() default "";
+    boolean needKeys() default false;
 }

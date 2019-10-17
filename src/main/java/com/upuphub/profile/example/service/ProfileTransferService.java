@@ -13,6 +13,12 @@ import java.util.Map;
  */
 
 public interface ProfileTransferService {
+    /**
+     * 需要转换的Profile信息值
+     *
+     * @param birthday 转换需要的Profile参数
+     * @return 转换计算到的结果Key-Value
+     */
     @ProfileLoader("birthToAge")
     Map<String,Object> birthToAge(@ProfileParam("birthday") Long birthday);
 }
