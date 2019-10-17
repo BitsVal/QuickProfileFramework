@@ -13,7 +13,7 @@ import java.util.Map;
  * @date 2019/10/16 23:18
  */
 
-public class ProfileGeneralManager {
+public class ProfileGeneralServiceManager {
     private Map<String, ProfileSpringProviderBean> profileSpringProviderBeans = new HashMap<>();
 
 

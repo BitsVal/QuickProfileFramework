@@ -198,9 +198,9 @@ public class ProfileServiceScannerRegistrar implements ImportBeanDefinitionRegis
      * @param registry Spring的注册管理器
      */
     private void registerProfileBeanMangerProcessor(BeanDefinitionRegistry registry){
-        String beanName = ClassUtils.getShortNameAsProperty(ProfileGeneralManager.class);
+        String beanName = ClassUtils.getShortNameAsProperty(ProfileGeneralServiceManager.class);
         if (!registry.containsBeanDefinition(beanName)) {
-            registry.registerBeanDefinition(beanName, new RootBeanDefinition(ProfileGeneralManager.class));
+            registry.registerBeanDefinition(beanName, new RootBeanDefinition(ProfileGeneralServiceManager.class));
         }
     }
 

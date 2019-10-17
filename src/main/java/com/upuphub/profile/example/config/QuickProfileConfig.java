@@ -1,7 +1,7 @@
 package com.upuphub.profile.example.config;
 
 import com.upuphub.profile.annotation.ProfileServiceScan;
-import com.upuphub.profile.spring.ProfileGeneralManager;
+import com.upuphub.profile.spring.ProfileGeneralServiceManager;
 import com.upuphub.profile.reflect.ProfileMethodHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class QuickProfileConfig {
     @Bean
-    public ProfileMethodHandler buildProfileMethodHandler(ProfileGeneralManager profileGeneralManager){
-        return new ProfileMethodHandler(profileGeneralManager);
+    public ProfileMethodHandler buildProfileMethodHandler(ProfileGeneralServiceManager profileGeneralServiceManager){
+        return new ProfileMethodHandler(profileGeneralServiceManager);
     }
 }

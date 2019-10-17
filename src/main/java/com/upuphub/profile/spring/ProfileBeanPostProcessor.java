@@ -21,7 +21,7 @@ public class ProfileBeanPostProcessor extends InstantiationAwareBeanPostProcesso
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileBeanPostProcessor.class);
 
     private BeanFactory beanFactory;
-    private ProfileGeneralManager profileGeneralManager;
+    private ProfileGeneralServiceManager profileGeneralServiceManager;
 
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
@@ -31,7 +31,7 @@ public class ProfileBeanPostProcessor extends InstantiationAwareBeanPostProcesso
     @Override
     public void afterPropertiesSet() throws Exception {
         // 执行加载
-        profileGeneralManager = beanFactory.getBean(ProfileGeneralManager.class);
+        profileGeneralServiceManager = beanFactory.getBean(ProfileGeneralServiceManager.class);
     }
 
     @Override
@@ -39,15 +39,15 @@ public class ProfileBeanPostProcessor extends InstantiationAwareBeanPostProcesso
         if (bean instanceof ProfileSpringProviderBean && isScanBuildGeneratedProfileBean(beanName)) {
             Class<?> underlyingClass = ProfileServiceScannerRegistrar.getUnderlyingClass(beanName);
             Object underlyingBean = beanFactory.getBean(underlyingClass);
-            BeanUtils.copyProperties(profileGeneralManager,bean);
+            BeanUtils.copyProperties(profileGeneralServiceManager,bean);
             ((ProfileSpringProviderBean) bean).setTarget(underlyingBean);
             ((ProfileSpringProviderBean) bean).setServiceInterface(underlyingClass.getInterfaces()[0]);
             ProfileService profileService = underlyingClass.getAnnotation(ProfileService.class);
             if(!ObjectUtil.isEmpty(profileService)){
                 if(ObjectUtil.isEmpty(profileService.value())){
-                    profileGeneralManager.setProfileSpringProviderBeans(underlyingClass.getInterfaces()[0].getSimpleName(),(ProfileSpringProviderBean) bean);
+                    profileGeneralServiceManager.setProfileSpringProviderBeans(underlyingClass.getInterfaces()[0].getSimpleName(),(ProfileSpringProviderBean) bean);
                 }else {
-                    profileGeneralManager.setProfileSpringProviderBeans(profileService.value(),(ProfileSpringProviderBean) bean);
+                    profileGeneralServiceManager.setProfileSpringProviderBeans(profileService.value(),(ProfileSpringProviderBean) bean);
                 }
             }
         }

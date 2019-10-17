@@ -3,7 +3,7 @@ package com.upuphub.profile.reflect;
 import com.upuphub.profile.annotation.ProfileParam;
 import com.upuphub.profile.exception.ProfileBeanNotFoundException;
 import com.upuphub.profile.exception.ProfileMethodNotFoundException;
-import com.upuphub.profile.spring.ProfileGeneralManager;
+import com.upuphub.profile.spring.ProfileGeneralServiceManager;
 import com.upuphub.profile.spring.ProfileSpringProviderBean;
 import com.upuphub.profile.utils.ObjectUtil;
 import org.slf4j.Logger;
@@ -17,10 +17,10 @@ import java.util.Map;
 public class ProfileMethodHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileMethodHandler.class);
 
-    private ProfileGeneralManager profileGeneralManager;
+    private ProfileGeneralServiceManager profileGeneralServiceManager;
 
-    public ProfileMethodHandler(ProfileGeneralManager profileGeneralManager) {
-        this.profileGeneralManager = profileGeneralManager;
+    public ProfileMethodHandler(ProfileGeneralServiceManager profileGeneralServiceManager) {
+        this.profileGeneralServiceManager = profileGeneralServiceManager;
     }
 
     /**
@@ -34,7 +34,7 @@ public class ProfileMethodHandler {
 
     public Object invokeMethodByName(String serviceName, String methodName, Map<String, Object> params) {
         try {
-            ProfileSpringProviderBean profileProviderBean = profileGeneralManager.getProfileSpringProviderBean(serviceName);
+            ProfileSpringProviderBean profileProviderBean = profileGeneralServiceManager.getProfileSpringProviderBean(serviceName);
             if (ObjectUtil.isEmpty(profileProviderBean)) {
                 throw new ProfileBeanNotFoundException(String.format("[%s] ProfileProviderBean is Empty", serviceName));
             }
