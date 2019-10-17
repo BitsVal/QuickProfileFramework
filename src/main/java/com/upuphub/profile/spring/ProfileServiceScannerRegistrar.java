@@ -190,6 +190,7 @@ public class ProfileServiceScannerRegistrar implements ImportBeanDefinitionRegis
         if (!registry.containsBeanDefinition(beanName)) {
             registry.registerBeanDefinition(beanName, new RootBeanDefinition(ProfileBeanPostProcessor.class));
         }
+        LOGGER.debug("Load ProfileBeanPostProcessor[{}] Success",beanName);
     }
 
     /**
@@ -202,6 +203,7 @@ public class ProfileServiceScannerRegistrar implements ImportBeanDefinitionRegis
         if (!registry.containsBeanDefinition(beanName)) {
             registry.registerBeanDefinition(beanName, new RootBeanDefinition(ProfileGeneralServiceManager.class));
         }
+        LOGGER.debug("Load ProfileBeanMangerProcessor[{}] Success",beanName);
     }
 
     /**

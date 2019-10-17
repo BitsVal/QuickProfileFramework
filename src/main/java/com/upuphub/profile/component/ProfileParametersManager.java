@@ -9,7 +9,6 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.DefaultResourceLoader;
 
 import java.io.InputStream;
@@ -28,20 +27,36 @@ public class ProfileParametersManager {
     /**
      * 服务和方法跟属性参数的绑定
      */
-    private Map<BaseProfileDefinition,ProfileParametersMethod> profileParametersServiceBinder = new HashMap<>();
+    private Map<BaseProfileDefinition, ProfileParametersMethod> profileParametersServiceBinder = new HashMap<>();
 
     /**
      * 参数跟方法的绑定
      */
     private Map<String, BaseProfileDefinition> profileDefinitionMapper = new HashMap<>();
+
+    /**
+     * 需要验证的属性集合
+     */
     private Set<String> needVerifyKeysSet = new HashSet<>();
+
+    /**
+     * 需要实时同时用户信息集合
+     */
     private Set<String> needSpreadKeysSet = new HashSet<>();
+
+    /**
+     * 只读属性的配置信息集合
+     */
     private Set<String> readOnlyKeysSet = new HashSet<>();
 
+    /**
+     * 配置文件流
+     */
+    private InputStream xmlFileStream;
 
-    public ProfileParametersManager(String xmlPath){
+    public ProfileParametersManager(String xmlPath) {
         try {
-            if(ObjectUtil.isEmpty(xmlPath)){
+            if (ObjectUtil.isEmpty(xmlPath)) {
                 throw new ProfileDefinitionException("xml Profile Path is Null");
             }
             this.xmlFileStream = new DefaultResourceLoader().getResource(xmlPath).getInputStream();
@@ -52,10 +67,8 @@ public class ProfileParametersManager {
         }
     }
 
-    private InputStream xmlFileStream;
 
-
-    public void loadProfileDefinition() {
+    private void loadProfileDefinition() {
         // 判断配置文件是否存在,不存在抛出异常
         if (xmlFileStream == null) {
             throw new ProfileDefinitionException("XML Configuration Not Found");
@@ -117,10 +130,17 @@ public class ProfileParametersManager {
         if (element.attribute(PROFILE_ATTRIBUTE_METHOD_DELETE) != null) {
             profileParametersMethod.setDeleteMethod(element.attribute(PROFILE_ATTRIBUTE_METHOD_DELETE).getValue());
         }
+        LOGGER.debug("Load Profile [{}] Service Method ",serviceName);
         return profileParametersMethod;
     }
 
-    private boolean attribute2Boolean (Attribute attribute){
+    /**
+     * 转换布尔属性值
+     *
+     * @param attribute  节点属性参数
+     * @return 转换后的节点属性
+     */
+    private boolean attribute2Boolean(Attribute attribute) {
         boolean value = false;
         if (null != attribute) {
             value = Boolean.parseBoolean(attribute.getValue());
@@ -128,6 +148,13 @@ public class ProfileParametersManager {
         return value;
     }
 
+    /**
+     * 加载Profile配置核心信息
+     *
+     * @param profile 用户Profile信息
+     * @param itemName 节点种类
+     * @param profileParametersMethod 节点根部对应的方法
+     */
     private void loadCommonProfileDefinition(Element profile, String itemName, ProfileParametersMethod profileParametersMethod) {
         // 读取Key的名字的和类型
         String profileName = profile.attribute(PROFILE_ATTRIBUTE_KEY).getValue();
@@ -152,21 +179,22 @@ public class ProfileParametersManager {
         if (null != profile.attribute(PROFILE_ATTRIBUTE_DEFAULT)) {
             defaultVal = profile.attribute(PROFILE_ATTRIBUTE_DEFAULT).getValue();
         }
+        LOGGER.debug("Load Profile Parameter [{}]",profileName);
         if (!PROFILE_ELEMENT_TRANSFER.equals(itemName)) {
             BaseProfileDefinition profileOriginalDefinition = new ProfileOriginalDefinition(
-                    profileName, profileType, readOnly, defaultVal, description,needVerify, needSpread);
-            profileParametersServiceBinder.put(profileOriginalDefinition,profileParametersMethod);
-            profileDefinitionMapper.put(profileName,profileOriginalDefinition);
+                    profileName, profileType, readOnly, defaultVal, description, needVerify, needSpread);
+            profileParametersServiceBinder.put(profileOriginalDefinition, profileParametersMethod);
+            profileDefinitionMapper.put(profileName, profileOriginalDefinition);
         } else {
             Attribute attributeTransMethod = profile.attribute(PROFILE_ATTRIBUTE_TRANS_METHOD);
             String transMethod = "";
             if (null != attributeTransMethod) {
                 transMethod = attributeTransMethod.getValue();
             }
-            BaseProfileDefinition profileTransferDefinition =  new ProfileTransferDefinition(
+            BaseProfileDefinition profileTransferDefinition = new ProfileTransferDefinition(
                     profileName, profileType, readOnly, defaultVal, description, transMethod);
-            profileParametersServiceBinder.put(profileTransferDefinition,profileParametersMethod);
-            profileDefinitionMapper.put(profileName,profileTransferDefinition);
+            profileParametersServiceBinder.put(profileTransferDefinition, profileParametersMethod);
+            profileDefinitionMapper.put(profileName, profileTransferDefinition);
         }
     }
 }
