@@ -4,6 +4,7 @@ import com.upuphub.profile.annotation.ProfileService;
 import com.upuphub.profile.utils.ObjectUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -38,13 +39,16 @@ public class ProfileBeanPostProcessor extends InstantiationAwareBeanPostProcesso
         if (bean instanceof ProfileSpringProviderBean && isScanBuildGeneratedProfileBean(beanName)) {
             Class<?> underlyingClass = ProfileServiceScannerRegistrar.getUnderlyingClass(beanName);
             Object underlyingBean = beanFactory.getBean(underlyingClass);
+            BeanUtils.copyProperties(profileGeneralManager,bean);
             ((ProfileSpringProviderBean) bean).setTarget(underlyingBean);
             ((ProfileSpringProviderBean) bean).setServiceInterface(underlyingClass.getInterfaces()[0]);
             ProfileService profileService = underlyingClass.getAnnotation(ProfileService.class);
-            if(ObjectUtil.isEmpty(profileService) || ObjectUtil.isEmpty(profileService.value())){
-                profileGeneralManager.setProfileSpringProviderBeans(underlyingClass.getInterfaces()[0].getSimpleName(),(ProfileSpringProviderBean) bean);
-            }else {
-                profileGeneralManager.setProfileSpringProviderBeans(profileService.value(),(ProfileSpringProviderBean) bean);
+            if(!ObjectUtil.isEmpty(profileService)){
+                if(ObjectUtil.isEmpty(profileService.value())){
+                    profileGeneralManager.setProfileSpringProviderBeans(underlyingClass.getInterfaces()[0].getSimpleName(),(ProfileSpringProviderBean) bean);
+                }else {
+                    profileGeneralManager.setProfileSpringProviderBeans(profileService.value(),(ProfileSpringProviderBean) bean);
+                }
             }
         }
         return bean;

@@ -1,5 +1,7 @@
 package com.upuphub.profile.test.service;
 
+import com.upuphub.profile.annotation.ProfileParam;
+
 import java.util.Map;
 
 /**
@@ -9,6 +11,6 @@ import java.util.Map;
  */
 public interface HiQuickProfile {
     Map<String,String> returnMap();
-    void inString(String hello);
+    void inString(@ProfileParam("hello") String hello);
     String outInput(String hello);
 }

@@ -2,6 +2,7 @@ package com.upuphub.profile.loader;
 
 import com.upuphub.profile.annotation.ProfileLoader;
 import com.upuphub.profile.annotation.ProfileService;
+import com.upuphub.profile.exception.ProfileMethodNotFoundException;
 import com.upuphub.profile.utils.ObjectUtil;
 
 import java.lang.reflect.Method;
@@ -18,7 +19,7 @@ import java.util.Map;
 public class ProfileSpringProviderBean{
     private String serviceName;
     private Object target;
-    private Map<String, Method> methodMap = new HashMap();
+    private Map<String,Method> methodMap = new HashMap();
 
     public void setTarget(Object underlyingBean) {
         this.target = underlyingBean;
@@ -34,6 +35,14 @@ public class ProfileSpringProviderBean{
             }
         }
     }
+    public Method getServiceMethod(String methodName) {
+        if(methodMap.containsKey(methodName)){
+            return methodMap.get(methodName);
+        }else{
+            throw new ProfileMethodNotFoundException(String.format("[%s.%s] Profile Method Not Found",serviceName,methodName));
+        }
+    }
+
 
     public String getServiceName() {
         return serviceName;
@@ -49,9 +58,5 @@ public class ProfileSpringProviderBean{
 
     public Map<String, Method> getMethodMap() {
         return methodMap;
-    }
-
-    public void setMethodMap(Map<String, Method> methodMap) {
-        this.methodMap = methodMap;
     }
 }

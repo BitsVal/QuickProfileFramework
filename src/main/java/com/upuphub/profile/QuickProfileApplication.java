@@ -1,6 +1,5 @@
 package com.upuphub.profile;
 
-import com.upuphub.profile.annotation.ProfileServiceScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
@@ -9,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @date 2019/10/15 19:59
  */
 
-@ProfileServiceScan(basePackages = "com.upuphub.profile.test.service")
+
 @SpringBootApplication
 public class QuickProfileApplication {
 

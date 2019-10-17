@@ -73,6 +73,8 @@ public class ProfileServiceScannerRegistrar implements ImportBeanDefinitionRegis
         }
         //注册PROFILE-SERVICE后处理器,为PROFILE对象注入执行环境配置信息
         registerProfileBeanPostProcessor(registry);
+        // 注册PROFILE-SERVICE通用管理器.管理PROFILE-SERVICE信息
+        registerProfileBeanMangerProcessor(registry);
         //注册Profile-Service信息
         registerBeanDefinitions(candidates, registry);
     }
@@ -187,6 +189,18 @@ public class ProfileServiceScannerRegistrar implements ImportBeanDefinitionRegis
         String beanName = ClassUtils.getShortNameAsProperty(ProfileBeanPostProcessor.class);
         if (!registry.containsBeanDefinition(beanName)) {
             registry.registerBeanDefinition(beanName, new RootBeanDefinition(ProfileBeanPostProcessor.class));
+        }
+    }
+
+    /**
+     * 注册Profile-service管理器
+     *
+     * @param registry Spring的注册管理器
+     */
+    private void registerProfileBeanMangerProcessor(BeanDefinitionRegistry registry){
+        String beanName = ClassUtils.getShortNameAsProperty(ProfileGeneralManager.class);
+        if (!registry.containsBeanDefinition(beanName)) {
+            registry.registerBeanDefinition(beanName, new RootBeanDefinition(ProfileGeneralManager.class));
         }
     }
 

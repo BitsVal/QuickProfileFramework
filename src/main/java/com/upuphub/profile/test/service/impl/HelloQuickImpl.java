@@ -8,11 +8,13 @@ import com.upuphub.profile.test.service.HelloQuickProfile;
  * @version 1.0
  * @date 2019/10/15 20:59
  */
+
 @ProfileService
 public class HelloQuickImpl implements HelloQuickProfile {
+
     @Override
-    public void sayHello() {
-        System.out.println("Hello World");
+    public String sayHello(String hello, Integer uin, Long longUin) {
+        return hello+uin+longUin;
     }
 
     @Override
