@@ -21,11 +21,15 @@ public class QuickProfileApplicationTests {
 
     @Test
     public void contextLoads() {
+    }
+
+    @Test
+    public void pullProfileTest(){
         List<String> profileList = new ArrayList<>();
         profileList.add("name");
         profileList.add("age");
         profileList.add("email");
         Map profileMap = profileService.pullGeneralProfile(10000L,profileList);
-        System.out.println();
+        System.out.println(profileMap);
     }
 }
