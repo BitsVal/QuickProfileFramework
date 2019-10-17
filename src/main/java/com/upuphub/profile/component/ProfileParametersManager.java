@@ -68,6 +68,9 @@ public class ProfileParametersManager {
     }
 
 
+    /**
+     * 加载XMLProfile配置文件
+     */
     private void loadProfileDefinition() {
         // 判断配置文件是否存在,不存在抛出异常
         if (xmlFileStream == null) {
