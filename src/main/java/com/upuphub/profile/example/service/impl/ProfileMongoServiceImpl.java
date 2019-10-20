@@ -33,4 +33,11 @@ public class ProfileMongoServiceImpl implements ProfileMongoService {
         }
         return profileMap;
     }
+
+    @Override
+    public Integer pushProfile(Long uin, Map<String, Object> paramsMap) {
+        System.out.println(uin);
+        System.out.println(paramsMap);
+        return 1;
+    }
 }

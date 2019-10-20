@@ -6,10 +6,12 @@ import com.upuphub.profile.exception.ProfileMethodNotFoundException;
 import com.upuphub.profile.exception.ProfileTransferException;
 import com.upuphub.profile.spring.ProfileGeneralServiceManager;
 import com.upuphub.profile.spring.ProfileSpringProviderBean;
+import com.upuphub.profile.utils.BeanUtil;
 import com.upuphub.profile.utils.ObjectUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -17,6 +19,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Leo Wang
+ * @version 1.0
+ * @date 2019/10/15 19:59
+ */
 public class ProfileMethodHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileMethodHandler.class);
 
@@ -36,7 +43,7 @@ public class ProfileMethodHandler {
      * @return 处理后的结果
      */
 
-    public Object invokeMethodByName(String serviceName, String methodName, Map<String, Object> params,List<String> methodKeys) {
+    public Object invokeMethodByName(String serviceName, String methodName, Map<String, Object> params, List<String> methodKeys) {
         try {
             ProfileSpringProviderBean profileProviderBean = profileGeneralServiceManager.getProfileSpringProviderBean(serviceName);
             if (ObjectUtil.isEmpty(profileProviderBean)) {
@@ -69,10 +76,15 @@ public class ProfileMethodHandler {
                         continue;
                     }
                     Object param = params.get(parameterName);
-                    if(ObjectUtil.isEmpty(param) && !ObjectUtil.isEmpty(transParam) && transParam.needKeys()){
-                        param = methodKeys;
-                    }
                     Class<?> clz = parameter.getType();
+                    if (ObjectUtil.isEmpty(param) && !ObjectUtil.isEmpty(transParam) && transParam.needKeys()) {
+                        param = methodKeys;
+                    } else if (ObjectUtil.isEmpty(param) && !ObjectUtil.isEmpty(transParam) && transParam.isObj()) {
+                        param = BeanUtil.convertMap(clz, params);
+                    } else if (ObjectUtil.isEmpty(param) && !ObjectUtil.isEmpty(transParam) && transParam.needMap()) {
+                        params.remove("uin");
+                        param = params;
+                    }
                     if (null != param) {
                         Object paramTransferred = transFromObjectType(clz, param);
                         parametersToSet[i++] = paramTransferred;
@@ -89,6 +101,8 @@ public class ProfileMethodHandler {
             }
         } catch (IllegalAccessException | InvocationTargetException e) {
             LOGGER.error("Profile Service Method invoked failed", e);
+        } catch (IntrospectionException | InstantiationException | NoSuchFieldException e) {
+            LOGGER.error("Profile Service Params changer failed", e);
         }
         return null;
     }
@@ -98,7 +112,7 @@ public class ProfileMethodHandler {
         List<String> transferParams = new LinkedList<>();
         Method reflectMethod = profileGeneralServiceManager.getProfileSpringProviderBean(serviceName).getMethodMap().get(tarnsMethod);
         if (null == reflectMethod) {
-            throw new ProfileTransferException(String.format("method [%s.%s] not found in ProfileTransService.class", serviceName,tarnsMethod));
+            throw new ProfileTransferException(String.format("method [%s.%s] not found in ProfileTransService.class", serviceName, tarnsMethod));
         }
         Parameter[] parameters = reflectMethod.getParameters();
         if (parameters.length > 0) {

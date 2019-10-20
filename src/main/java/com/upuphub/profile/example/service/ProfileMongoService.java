@@ -21,4 +21,15 @@ public interface ProfileMongoService {
      */
     @ProfileLoader("pullProfile")
     Map<String,Object> pullProfile(@ProfileParam("uin") Long uin,@ProfileParam(needKeys = true) List<String> profileKeys);
+
+
+    /**
+     * 修改Profile信息
+     *
+     * @param uin uin
+     * @param paramsMap 参数Map
+     * @return 修改变化的参数属性
+     */
+    @ProfileLoader("pushProfile")
+    Integer pushProfile(@ProfileParam("uin") Long uin,@ProfileParam(needMap = true) Map<String,Object> paramsMap);
 }

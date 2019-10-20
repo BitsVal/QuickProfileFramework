@@ -15,8 +15,13 @@ import java.util.Map;
 @ProfileService("ProfileTransferService")
 public class ProfileTransferServiceImpl implements ProfileTransferService {
     @Override
-    public Map<String, Object> birthToAge(Long birthday) throws InterruptedException {
-        Thread.sleep(10);
-        return Collections.singletonMap("age",(int)(System.currentTimeMillis() - birthday));
+    public Map<String, Object> birthToAge(Long birthday){
+        try {
+            Thread.sleep(10);
+            return Collections.singletonMap("age",(int)(System.currentTimeMillis() - birthday));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return Collections.emptyMap();
+        }
     }
 }

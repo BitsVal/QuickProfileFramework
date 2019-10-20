@@ -1,6 +1,6 @@
 package com.upuphub.profile;
 
-import com.upuphub.profile.service.AbstractProfileService;
+import com.upuphub.profile.service.BaseProfileService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +18,7 @@ import java.util.Map;
 public class QuickProfileApplicationTests {
 
     @Autowired
-    AbstractProfileService profileService;
+    BaseProfileService profileService;
 
     @Test
     public void contextLoads() {
@@ -31,5 +32,15 @@ public class QuickProfileApplicationTests {
         profileList.add("email");
         Map profileMap = profileService.pullGeneralProfile(10000L,profileList);
         System.out.println(profileMap);
+    }
+
+    @Test
+    public void pushProfileTest(){
+        Map<String,Object> profileMap= new HashMap<>();
+        profileMap.put("email","QuickProfile@upuphub.com");
+        profileMap.put("name","ProfileName");
+        profileMap.put("birthday",System.currentTimeMillis());
+        Integer hello = profileService.pushGeneralProfile(10000L,profileMap);
+        System.out.println(hello);
     }
 }

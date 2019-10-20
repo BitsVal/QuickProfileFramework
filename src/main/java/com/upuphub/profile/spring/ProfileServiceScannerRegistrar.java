@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.*;
 
+import static com.upuphub.profile.utils.ProfileXmlParameterUtil.FILTER_ATTRIBUTES_CLASSES;
+import static com.upuphub.profile.utils.ProfileXmlParameterUtil.FILTER_ATTRIBUTES_TYPE;
 import static org.springframework.core.io.support.ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX;
 
 /**
@@ -262,9 +264,9 @@ public class ProfileServiceScannerRegistrar implements ImportBeanDefinitionRegis
     @SuppressWarnings("unchecked")
     private List<TypeFilter> typeFiltersFor(AnnotationAttributes filterAttributes) {
         List<TypeFilter> typeFilters = new ArrayList<TypeFilter>();
-        FilterType filterType = filterAttributes.getEnum("type");
+        FilterType filterType = filterAttributes.getEnum(FILTER_ATTRIBUTES_TYPE);
 
-        for (Class<?> filterClass : filterAttributes.getClassArray("classes")) {
+        for (Class<?> filterClass : filterAttributes.getClassArray(FILTER_ATTRIBUTES_CLASSES)) {
             switch (filterType) {
                 case ANNOTATION:
                     Assert.isAssignable(Annotation.class, filterClass,

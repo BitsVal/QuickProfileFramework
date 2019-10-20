@@ -65,8 +65,12 @@ public abstract class BaseProfileDefinition {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof BaseProfileDefinition)) return false;
+        if (this == o){
+            return true;
+        }
+        if (!(o instanceof BaseProfileDefinition)) {
+            return false;
+        }
         BaseProfileDefinition that = (BaseProfileDefinition) o;
         return isReadOnly() == that.isReadOnly() &&
                 Objects.equals(getKey(), that.getKey()) &&

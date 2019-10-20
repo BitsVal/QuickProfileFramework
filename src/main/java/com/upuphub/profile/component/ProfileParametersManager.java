@@ -31,7 +31,7 @@ public class ProfileParametersManager {
     private Map<BaseProfileDefinition, ProfileParametersMethod> profileParametersServiceBinder = new HashMap<>();
 
     /**
-     * 参数跟方法的绑定
+     * 参数跟参数属性的绑定
      */
     private Map<String, BaseProfileDefinition> profileDefinitionMapper = new HashMap<>();
 
@@ -39,7 +39,7 @@ public class ProfileParametersManager {
     /**
      * 每一个方法下的所有Keys
      */
-    private Map<ProfileParametersMethod,Set<String>> profileParametersMethodKeys = new HashMap<>();
+    private Map<ProfileParametersMethod, Set<String>> profileParametersMethodKeys = new HashMap<>();
 
 
     /**
@@ -76,7 +76,7 @@ public class ProfileParametersManager {
             LOGGER.info("Load XML profile config succeed");
         } catch (Exception e) {
             LOGGER.error("Load XML profile config failed", e);
-        }finally {
+        } finally {
             xmlFileStream = null;
         }
     }
@@ -115,7 +115,7 @@ public class ProfileParametersManager {
                         String profileKey = loadCommonProfileDefinition((Element) profileIter.next(), itemName, profileParametersMethod);
                         profileKeys.add(profileKey);
                     }
-                    profileParametersMethodKeys.put(profileParametersMethod,profileKeys);
+                    profileParametersMethodKeys.put(profileParametersMethod, profileKeys);
                 }
             }
             LOGGER.info("Profile init loading succeeded");
@@ -153,14 +153,14 @@ public class ProfileParametersManager {
         if (element.attribute(PROFILE_ATTRIBUTE_METHOD_DELETE) != null) {
             profileParametersMethod.setDeleteMethod(element.attribute(PROFILE_ATTRIBUTE_METHOD_DELETE).getValue());
         }
-        LOGGER.debug("Load Profile [{}] Service Method ",serviceName);
+        LOGGER.debug("Load Profile [{}] Service Method ", serviceName);
         return profileParametersMethod;
     }
 
     /**
      * 转换布尔属性值
      *
-     * @param attribute  节点属性参数
+     * @param attribute 节点属性参数
      * @return 转换后的节点属性
      */
     private boolean attribute2Boolean(Attribute attribute) {
@@ -174,8 +174,8 @@ public class ProfileParametersManager {
     /**
      * 加载Profile配置核心信息
      *
-     * @param profile 用户Profile信息
-     * @param itemName 节点种类
+     * @param profile                 用户Profile信息
+     * @param itemName                节点种类
      * @param profileParametersMethod 节点根部对应的方法
      */
     private String loadCommonProfileDefinition(Element profile, String itemName, ProfileParametersMethod profileParametersMethod) {
@@ -202,7 +202,7 @@ public class ProfileParametersManager {
         if (null != profile.attribute(PROFILE_ATTRIBUTE_DEFAULT)) {
             defaultVal = profile.attribute(PROFILE_ATTRIBUTE_DEFAULT).getValue();
         }
-        LOGGER.debug("Load Profile Parameter [{}]",profileName);
+        LOGGER.debug("Load Profile Parameter [{}]", profileName);
         if (!PROFILE_ELEMENT_TRANSFER.equals(itemName)) {
             BaseProfileDefinition profileOriginalDefinition = new ProfileOriginalDefinition(
                     profileName, profileType, readOnly, defaultVal, description, needVerify, needSpread);
@@ -228,7 +228,7 @@ public class ProfileParametersManager {
      * @param keys 用户传入的Key
      * @return 查询到的Key属性对象集合
      */
-    public  List<BaseProfileDefinition> getProfileDefinitionByKeys(List<String> keys) {
+    public List<BaseProfileDefinition> getProfileDefinitionByKeys(List<String> keys) {
         if (null == keys || keys.isEmpty()) {
             return Collections.emptyList();
         }
@@ -270,7 +270,7 @@ public class ProfileParametersManager {
                 // 递归添加到需要的数组中(todo 可能会出现死锁,也可能会出现引用为空的情况出现)
                 originalKeysSet.addAll((getOriginalKeysByKeys(
                         profileMethodHandler.getTransferParamsByMethod(
-                                profileParametersServiceBinder.get(baseProfileDefinition).getServiceName(),tarnsMethod))
+                                profileParametersServiceBinder.get(baseProfileDefinition).getServiceName(), tarnsMethod))
                 ));
             } else {
                 // 添加到List中
@@ -280,29 +280,112 @@ public class ProfileParametersManager {
         return new ArrayList<>(originalKeysSet);
     }
 
+    /**
+     * 从传入的Map中获取基本元素Map
+     *
+     * @param paramsMap 参数Map
+     * @return 分离后的Map
+     */
+    public Map<String, Object> getOriginalMapByMap(Map<String, Object> paramsMap) {
+        if (ObjectUtil.isEmpty(paramsMap)) {
+            return Collections.emptyMap();
+        }
+        // 准备返回的原始对象的Map
+        Map<String, Object> originalParamsMap = new HashMap<>(paramsMap.size());
+        paramsMap.forEach((key, value) -> {
+            BaseProfileDefinition baseProfileDefinition = profileDefinitionMapper.get(key);
+            // 没有配置在设定中的Key中,直接跳过
+            if (!ObjectUtil.isEmpty(baseProfileDefinition)) {
+                if(baseProfileDefinition instanceof ProfileOriginalDefinition){
+                    originalParamsMap.put(key,value);
+                }
+            }
+        });
+        return originalParamsMap;
+    }
+
+
+    /**
+     * 通过Key名称,获取Profile方法中Key的属性信息
+     *
+     * @param key key名称
+     * @return Key属性对象信息
+     */
     public BaseProfileDefinition getBaseProfileDefinitionByKey(String key) {
-        if(profileDefinitionMapper.containsKey(key)){
+        if (profileDefinitionMapper.containsKey(key)) {
             return profileDefinitionMapper.get(key);
         }
         return null;
     }
 
+    /**
+     * 通过Key属性对象,获取Key对象对象方法对象
+     *
+     * @param profileDefinition key属性对象
+     * @return Key的方法对象
+     */
     public ProfileParametersMethod getProfileParametersMethodByDefinition(BaseProfileDefinition profileDefinition) {
-        if(profileParametersServiceBinder.containsKey(profileDefinition)){
+        if (profileParametersServiceBinder.containsKey(profileDefinition)) {
             return profileParametersServiceBinder.get(profileDefinition);
         }
         return null;
     }
 
-    public Object invokeMethod(ProfileParametersMethod method,String methodName,Map<String,Object> params,List allKeys){
+    /**
+     * 获取与Key关联的属性对象值
+     *
+     * @param key 属性对象参数
+     * @return 属性对象同方法的其他参数
+     */
+    public ProfileParametersMethod getProfileMethodParameterByKey(String key) {
+        return getProfileParametersMethodByDefinition(
+                getBaseProfileDefinitionByKey(key)
+        );
+    }
+
+
+    /**
+     * 方法调用的实现
+     *
+     * @param method 方法需要调用的方法
+     * @param methodName 方法的名称
+     * @param params 调用方法可能需要的参数
+     * @param allKeys 方法下所有的Key
+     * @return 执行方法后的返回值
+     */
+    public Object invokeMethod(ProfileParametersMethod method, String methodName, Map<String, Object> params, List allKeys) {
         // 分理出需要在该方法中需要查询的Key
         Set<String> paramsKeys = profileParametersMethodKeys.get(method);
         List<String> keysList = new ArrayList<>();
-        paramsKeys.forEach(key->{
-            if(allKeys.contains(key)){
-                keysList.add(key);
+        for (String paramsKey : paramsKeys) {
+            if (allKeys.contains(paramsKey)) {
+                keysList.add(paramsKey);
             }
-        });
-        return profileMethodHandler.invokeMethodByName(method.getServiceName(),methodName,params,keysList);
+        }
+        return profileMethodHandler.invokeMethodByName(method.getServiceName(), methodName, params, keysList);
+    }
+
+    /**
+     * 方法调用的实现
+     *
+     * @param method 方法需要调用的方法
+     * @param methodName 方法的名称
+     * @param params 调用方法可能需要的参数
+     * @return 执行方法后的返回值
+     */
+    public Object invokeMethod(ProfileParametersMethod method, String methodName, Map<String, Object> params) {
+        // 分理出需要在该方法中需要查询的Key
+        String uinKey = "uin";
+        Set<String> paramsKeys = profileParametersMethodKeys.get(method);
+        Map<String,Object> paramsMap = new HashMap<>(paramsKeys.size());
+        if(params.containsKey(uinKey)){
+            paramsMap.put(uinKey,params.get(uinKey));
+        }
+        for (String paramsKey : paramsKeys) {
+            if (params.containsKey(paramsKey)) {
+                paramsMap.put(paramsKey,params.get(paramsKey));
+            }
+        }
+        return profileMethodHandler.invokeMethodByName(method.getServiceName(), methodName, paramsMap,Collections.emptyList());
     }
 }

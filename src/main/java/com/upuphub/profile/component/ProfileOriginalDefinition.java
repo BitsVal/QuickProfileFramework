@@ -35,9 +35,15 @@ public class ProfileOriginalDefinition extends BaseProfileDefinition{
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ProfileOriginalDefinition)) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ProfileOriginalDefinition)) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         ProfileOriginalDefinition that = (ProfileOriginalDefinition) o;
         return isNeedVerify() == that.isNeedVerify() &&
                 isNeedSpread() == that.isNeedSpread();

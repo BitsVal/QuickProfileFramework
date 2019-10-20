@@ -20,5 +20,5 @@ public interface ProfileTransferService {
      * @return 转换计算到的结果Key-Value
      */
     @ProfileLoader("birthToAge")
-    Map<String,Object> birthToAge(@ProfileParam("birthday") Long birthday) throws InterruptedException;
+    Map<String,Object> birthToAge(@ProfileParam("birthday") Long birthday);
 }

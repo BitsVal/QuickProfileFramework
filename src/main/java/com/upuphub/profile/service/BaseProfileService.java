@@ -2,12 +2,14 @@ package com.upuphub.profile.service;
 
 
 import com.upuphub.profile.component.*;
+import com.upuphub.profile.utils.BeanUtil;
 import com.upuphub.profile.utils.ObjectUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.beans.IntrospectionException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 
 /**
@@ -15,13 +17,14 @@ import java.util.Map;
  * @version 1.0
  * @date 2019/9/18 21:07
  */
-public abstract class AbstractProfileService {
+public abstract class BaseProfileService {
+    private static Logger LOGGER = LoggerFactory.getLogger(BaseProfileService.class);
 
 
     private ProfileParametersManager profileParametersManager;
 
 
-    public AbstractProfileService(ProfileParametersManager profileParametersManager) {
+    public BaseProfileService(ProfileParametersManager profileParametersManager) {
         this.profileParametersManager = profileParametersManager;
     }
 
@@ -33,18 +36,25 @@ public abstract class AbstractProfileService {
      * @return 查询得到的返回结果
      */
     public Map<String, Object> pullGeneralProfile(long uin, List<String> keys) {
-        // 如果入参为空,直接返回
-        if (null == keys || keys.isEmpty()) {
+        try {
+            // 如果入参为空,直接返回
+            if (null == keys || keys.isEmpty()) {
+                return Collections.emptyMap();
+            }
+            List<String> originalKeys = profileParametersManager.getOriginalKeysByKeys(keys);
+            // 获取提取传入的Keys中的原始参数
+            //  准备返回的对象
+            Map<String, Object> keyVal = new HashMap<>(originalKeys.size());
+            // 根本的Profile对象
+
+            keyVal.putAll(pullOriginalProfileValue(uin, originalKeys));
+
+            // 获取拓展类对象的值
+            return pullTransferProfiles(keys, keyVal);
+        } catch (IllegalAccessException | InvocationTargetException | IntrospectionException e) {
+            LOGGER.error("pullGeneralProfile error", e);
             return Collections.emptyMap();
         }
-        List<String> originalKeys = profileParametersManager.getOriginalKeysByKeys(keys);
-        // 获取提取传入的Keys中的原始参数
-        //  准备返回的对象
-        Map<String, Object> keyVal = new HashMap<>(originalKeys.size());
-        // 根本的Profile对象
-        keyVal.putAll(pullOriginalProfileValue(uin, originalKeys));
-        // 获取拓展类对象的值
-        return pullTransferProfiles(keys, keyVal);
     }
 
 
@@ -55,7 +65,7 @@ public abstract class AbstractProfileService {
      * @param parameters 查询所需要依赖的其他基础Profile的参数
      * @return 计算获取后的Profile信息
      */
-    private Map<String, Object> pullTransferProfiles(List<String> keys, Map<String, Object> parameters) {
+    private Map<String, Object> pullTransferProfiles(List<String> keys, Map<String, Object> parameters) throws IllegalAccessException, IntrospectionException, InvocationTargetException {
         // 对入参进行校验,如果为空，直接返回
         if (null == keys || keys.isEmpty()) {
             return Collections.emptyMap();
@@ -78,13 +88,9 @@ public abstract class AbstractProfileService {
                     Object value = profileParametersManager.invokeMethod(profileParametersMethod, profileTransfer.getTransferMethod(), parameters, keys);
                     // 如果计算结果不为空,写入到Map中
                     if (!ObjectUtil.isEmpty(value)) {
-                        if (value instanceof Map) {
-                            profileMap.putAll((Map<String, Object>) value);
-                        } else {
-                            profileMap.put(key, value);
-                        }
+                        // todo 这里缺少对单一返回值的处理
+                        profileMap.putAll(BeanUtil.convertBean(value));
                     }
-
                 }
             } else {
                 // 对于原始Key直接写入到Map中
@@ -104,7 +110,7 @@ public abstract class AbstractProfileService {
      * @param originalKeys 查询的Key
      * @return 查询结果的Map
      */
-    private Map<String, Object> pullOriginalProfileValue(long uin, List<String> originalKeys) {
+    private Map<String, Object> pullOriginalProfileValue(long uin, List<String> originalKeys) throws IllegalAccessException, IntrospectionException, InvocationTargetException {
         // 对入参进行校验,如果为空，直接返回
         if (null == originalKeys || originalKeys.isEmpty()) {
             return Collections.emptyMap();
@@ -123,7 +129,8 @@ public abstract class AbstractProfileService {
             // 取出需要计算的Profile信息，进行计算
             if (baseProfileDefinition instanceof ProfileOriginalDefinition) {
                 ProfileOriginalDefinition profileOriginal = (ProfileOriginalDefinition) baseProfileDefinition;
-                ProfileParametersMethod profileParametersMethod = profileParametersManager.getProfileParametersMethodByDefinition(profileOriginal);
+                ProfileParametersMethod profileParametersMethod = profileParametersManager
+                        .getProfileParametersMethodByDefinition(profileOriginal);
                 if (!ObjectUtil.isEmpty(profileParametersMethod)) {
                     if (profileMap.containsKey(profileOriginal.getKey())
                             && !ObjectUtil.isEmpty(profileMap.get(profileOriginal.getKey()))) {
@@ -133,11 +140,8 @@ public abstract class AbstractProfileService {
                             profileParametersMethod.getSelectMethod(), profileMap, originalKeys);
                     // 如果计算结果不为空,写入到Map中
                     if (!ObjectUtil.isEmpty(value)) {
-                        if (value instanceof Map) {
-                            profileMap.putAll((Map<String, Object>) value);
-                        } else {
-                            profileMap.put(key, value);
-                        }
+                        // todo 这里缺少对单一返回值的处理
+                        profileMap.putAll(BeanUtil.convertBean(value));
                     }
                 }
             }
@@ -151,8 +155,53 @@ public abstract class AbstractProfileService {
      * 修改指定Key的Value
      *
      * @param uin       被修改人的uin
-     * @param key2value 需要修改的Key-Value键值对
+     * @param paramsMap 需要修改的Key-Value键值对
      * @return 修改的状态返回
      */
-    protected abstract Integer pushGeneralProfile(Long uin, Map<String, String> key2value);
+    public Integer pushGeneralProfile(Long uin, Map<String, Object> paramsMap) {
+        // 如果入参为空,直接返回
+        if (!ObjectUtil.isEmpty(paramsMap)) {
+            // 提取传入的参数所有的非拓展类参数
+            Map<String, Object> originalParamsMap = profileParametersManager.getOriginalMapByMap(paramsMap);
+            // 执行更新方法的实现
+            return updateGeneralProfile(uin, originalParamsMap);
+        }
+        return Integer.MIN_VALUE;
+    }
+
+
+    /**
+     * 更新用户Profile信息
+     *
+     * @param uin        用户Uin
+     * @param parameters 需要修改的Profile的参数
+     * @return 修改的处理状态
+     */
+    private Integer updateGeneralProfile(Long uin, Map<String, Object> parameters) {
+        // 对入参进行校验,如果为空，直接返回
+        if (ObjectUtil.isEmpty(parameters)) {
+            return Integer.MIN_VALUE;
+        }
+        Integer changerNumber = 0;
+        parameters.put("uin",uin);
+        Set<ProfileParametersMethod> needInvokeMethodSet = new HashSet<>();
+        // 遍历需要更新的参数Map
+        for (String key : parameters.keySet()) {
+            // 获取与Key相关的所有参数
+            ProfileParametersMethod profileParametersMethod = profileParametersManager.getProfileMethodParameterByKey(key);
+            if (!ObjectUtil.isEmpty(profileParametersMethod)) {
+                needInvokeMethodSet.add(profileParametersMethod);
+            }
+        }
+        for (ProfileParametersMethod profileParametersMethod : needInvokeMethodSet) {
+            Object value = profileParametersManager.invokeMethod(profileParametersMethod, profileParametersMethod.getUpdateMethod(), parameters);
+            if (!ObjectUtil.isEmpty(value)) {
+                if (value instanceof Integer) {
+                    changerNumber += (Integer) value;
+                }
+            }
+        }
+        // 返回计算后的ProfileMap的值
+        return changerNumber;
+    }
 }

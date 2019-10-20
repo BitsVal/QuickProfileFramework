@@ -1,5 +1,11 @@
 package com.upuphub.profile.utils;
 
+/**
+ * @author Leo Wang
+ * @version 1.0
+ * @date 2019/10/15 19:59
+ */
+
 public class ProfileXmlParameterUtil {
     public static final String PROFILE_ELEMENT_ORIGINAL = "original";
     public static final String PROFILE_ELEMENT_TRANSFER = "transfer";
@@ -16,4 +22,8 @@ public class ProfileXmlParameterUtil {
     public static final String PROFILE_ATTRIBUTE_DESCRIPTION = "description";
     public static final String PROFILE_ATTRIBUTE_SPREAD = "spread";
     public static final String PROFILE_ATTRIBUTE_TRANS_METHOD = "transMethod";
+
+
+    public static final String FILTER_ATTRIBUTES_TYPE = "type";
+    public static final String FILTER_ATTRIBUTES_CLASSES = "classes";
 }

@@ -25,9 +25,15 @@ public class ProfileTransferDefinition extends BaseProfileDefinition{
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ProfileTransferDefinition)) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ProfileTransferDefinition)) {
+            return false;
+        }
+        if (!super.equals(o)){
+            return false;
+        }
         ProfileTransferDefinition that = (ProfileTransferDefinition) o;
         return getTransferMethod().equals(that.getTransferMethod());
     }

@@ -55,8 +55,12 @@ public class ProfileParametersMethod {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ProfileParametersMethod)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ProfileParametersMethod)){
+            return false;
+        }
         ProfileParametersMethod that = (ProfileParametersMethod) o;
         return Objects.equals(getServiceName(), that.getServiceName()) &&
                 Objects.equals(getSelectMethod(), that.getSelectMethod()) &&

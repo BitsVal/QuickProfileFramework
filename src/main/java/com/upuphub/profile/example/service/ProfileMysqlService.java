@@ -2,6 +2,7 @@ package com.upuphub.profile.example.service;
 
 import com.upuphub.profile.annotation.ProfileLoader;
 import com.upuphub.profile.annotation.ProfileParam;
+import com.upuphub.profile.example.bean.EmailTestBean;
 
 import java.util.Map;
 
@@ -19,5 +20,15 @@ public interface ProfileMysqlService {
      * @return 查询到的结果Key-Value
      */
     @ProfileLoader("pullAccountStatus")
-    Map<String,Object> pullAccountStatus(@ProfileParam("uin") Long uin);
+    EmailTestBean pullAccountStatus(@ProfileParam("uin") Long uin);
+
+    /**
+     * 修改Profile参数
+     *
+     * @param uin 用户Uin
+     * @param emailTestBean 需要修改的参数的值
+     * @return 受影响的行数
+     */
+    @ProfileLoader("pushAccountStatus")
+    Integer pushAccountStatus(@ProfileParam("uin") Long uin,@ProfileParam(isObj = true)EmailTestBean emailTestBean);
 }
