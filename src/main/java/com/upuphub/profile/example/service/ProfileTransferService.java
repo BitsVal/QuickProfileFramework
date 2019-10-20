@@ -3,7 +3,6 @@ package com.upuphub.profile.example.service;
 import com.upuphub.profile.annotation.ProfileLoader;
 import com.upuphub.profile.annotation.ProfileParam;
 
-import java.util.List;
 import java.util.Map;
 
 /**
