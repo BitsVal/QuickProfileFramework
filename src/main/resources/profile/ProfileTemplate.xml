@@ -3,7 +3,7 @@
 
     <original service = "ProfileMongoService" selectMethod = "pullProfile" updateMethod="pushProfile">
         <profile key="name" type="String" readonly="false" verify="true" default="微露用户" description="用户姓名" />
-        <profile key="birthday" type="Long" readonly="false" default=""  description="用户生日"/>
+        <profile key="birthday" type="Long" readonly="false" spread = "true" default=""  description="用户生日"/>
     </original>
 
 
