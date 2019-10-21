@@ -8,7 +8,7 @@ import java.lang.annotation.*;
  * @version 1.0
  * @date 2019/10/15 19:59
  */
-@Target({ElementType.TYPE})
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface ProfileService {

@@ -23,7 +23,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
-
         <!-- dom4j -->
         <dependency>
             <groupId>dom4j</groupId>
@@ -40,7 +39,7 @@
 
     <build>
 
-        <!--
+        <!-- 不使用Springboot的打包
             <plugins>
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
@@ -48,7 +47,6 @@
                 </plugin>
             </plugins>
         -->
-
 
         <plugins>
             <plugin>

@@ -7,7 +7,7 @@ import java.lang.annotation.*;
  * @version 1.0
  * @date 2019/10/15 19:59
  */
-@Target({ElementType.METHOD})
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface ProfileLoader {
