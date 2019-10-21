@@ -1,4 +1,7 @@
 # QuickProfileFramework
+![](https://www.easyicon.net/download/svg/1212479/520/)
+![](https://img.shields.io/badge/build-passing-brightgreen) ![](https://img.shields.io/badge/version-0.0.1_SNAPSHOT-pink)  ![](https://img.shields.io/badge/license-Apache%202-blue)  ![](https://img.shields.io/badge/Dew-QuickProfike-yellow) ![](https://img.shields.io/badge/Content-isWangzl@aliyun.com-Red) ![](https://img.shields.io/badge/project-maven-orange)
+
 基于表驱动思想,实现的快捷查询转换Profile数据，可配置化的Profile数据信息信息
 ## 快速使用
 在Springboot项目中 pom文件引入
@@ -114,13 +117,14 @@ public class ProfileService extends BaseProfileService {
 ```
 
 ## Profile注解
-> @ProfileBeanParam ProfileBean转换的属性别名标识
-> @ProfileLoader 标识Profile属性的service执行方法
-> @ProfileParam 标识需要的Profile属性参数
-> @ProfileService 标识这是一个Profile服务
-> @ProfileServiceScan 扫描自动配置QuickProfile
+`@ProfileBeanParam` ProfileBean转换的属性别名标识
+`@ProfileLoader` 标识Profile属性的service执行方法
+`@ProfileParam` 标识需要的Profile属性参数
+`@ProfileService` 标识这是一个Profile服务
+`@ProfileServiceScan` 扫描自动配置QuickProfile
 
 以下是Profile方法的使用示例
+#### Key-Value 类型的Nosql数据库
 ```java
 /**
  * @author Leo Wang
@@ -186,6 +190,7 @@ public class ProfileMongoServiceImpl implements ProfileMongoService {
     }
 }
 ```
+#### 传统的关系型数据库
 ```java
 /**
  * @author Leo Wang
@@ -240,6 +245,7 @@ public class ProfileMysqlServiceImpl implements ProfileMysqlService {
     }
 }
 ```
+#### 基本属性的拓展
 ```java
 /**
  * @author Leo Wang
