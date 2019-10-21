@@ -226,21 +226,8 @@ public abstract class BaseProfileService {
 
 
     /**
-     * 执行通知的Profile的实现方法
-     *
-     * @param spreadProfileMap 需要通知的值的KeyMap
+     * 强制设置只读参数可写
      */
-    public abstract void handlingProfileSpread(Map<String, Object> spreadProfileMap);
-
-
-    /**
-     * 执行验证Profile的Map
-     *
-     * @param verifyProfileMap 需要验证的ProfileMap执行
-     */
-    public abstract boolean handlingProfileVerify(Map<String, Object> verifyProfileMap);
-
-
     public void setProfileCanWrite() {
         profileCanNotWrite = false;
     }
@@ -259,4 +246,20 @@ public abstract class BaseProfileService {
         });
         return newProfileMap;
     }
+
+
+    /**
+     * 执行通知的Profile的实现方法
+     *
+     * @param spreadProfileMap 需要通知的值的KeyMap
+     */
+    protected abstract void handlingProfileSpread(Map<String, Object> spreadProfileMap);
+
+
+    /**
+     * 执行验证Profile的Map
+     *
+     * @param verifyProfileMap 需要验证的ProfileMap执行
+     */
+    protected abstract boolean handlingProfileVerify(Map<String, Object> verifyProfileMap);
 }
