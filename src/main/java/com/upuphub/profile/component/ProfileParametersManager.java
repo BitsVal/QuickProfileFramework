@@ -388,4 +388,31 @@ public class ProfileParametersManager {
         }
         return profileMethodHandler.invokeMethodByName(method.getServiceName(), methodName, paramsMap,Collections.emptyList());
     }
+
+    /**
+     * 校验Key是否是需要广播的
+     * @param profileKey 需要校验的Key
+     * @return Key的校验结果
+     */
+    public boolean checkProfileKeyIsSpread(String profileKey){
+        return needSpreadKeysSet.contains(profileKey);
+    }
+
+    /**
+     * 校验Key是否是验证的
+     * @param profileKey 需要校验的Key
+     * @return Key的校验结果
+     */
+    public boolean checkProfileKeyIsVerify(String profileKey){
+        return needVerifyKeysSet.contains(profileKey);
+    }
+
+    /**
+     * 校验Key是否是只读的
+     * @param profileKey 需要校验的Key
+     * @return Key的校验结果
+     */
+    public boolean checkProfileKeyIsSReadOnly(String profileKey){
+        return readOnlyKeysSet.contains(profileKey);
+    }
 }

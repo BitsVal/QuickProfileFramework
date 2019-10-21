@@ -40,7 +40,8 @@ public class QuickProfileApplicationTests {
         profileMap.put("email","QuickProfile@upuphub.com");
         profileMap.put("name","ProfileName");
         profileMap.put("birthday",System.currentTimeMillis());
+        profileService.setProfileCanWrite();
         Integer hello = profileService.pushGeneralProfile(10000L,profileMap);
-        System.out.println(hello);
+        Integer hello1 = profileService.pushGeneralProfile(10000L,profileMap);
     }
 }

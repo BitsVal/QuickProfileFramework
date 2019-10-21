@@ -20,7 +20,7 @@ import java.util.*;
 public abstract class BaseProfileService {
     private static Logger LOGGER = LoggerFactory.getLogger(BaseProfileService.class);
 
-
+    private boolean profileCanNotWrite = true;
     private ProfileParametersManager profileParametersManager;
 
 
@@ -46,15 +46,31 @@ public abstract class BaseProfileService {
             //  准备返回的对象
             Map<String, Object> keyVal = new HashMap<>(originalKeys.size());
             // 根本的Profile对象
-
             keyVal.putAll(pullOriginalProfileValue(uin, originalKeys));
-
             // 获取拓展类对象的值
             return pullTransferProfiles(keys, keyVal);
         } catch (IllegalAccessException | InvocationTargetException | IntrospectionException e) {
             LOGGER.error("pullGeneralProfile error", e);
             return Collections.emptyMap();
         }
+    }
+
+    /**
+     * 修改指定Key的Value
+     *
+     * @param uin       被修改人的uin
+     * @param paramsMap 需要修改的Key-Value键值对
+     * @return 修改的状态返回
+     */
+    public Integer pushGeneralProfile(Long uin, Map<String, Object> paramsMap) {
+        // 如果入参为空,直接返回
+        if (!ObjectUtil.isEmpty(paramsMap)) {
+            // 提取传入的参数所有的非拓展类参数
+            Map<String, Object> originalParamsMap = profileParametersManager.getOriginalMapByMap(paramsMap);
+            // 执行更新方法的实现
+            return updateGeneralProfile(uin, originalParamsMap);
+        }
+        return Integer.MIN_VALUE;
     }
 
 
@@ -152,25 +168,6 @@ public abstract class BaseProfileService {
 
 
     /**
-     * 修改指定Key的Value
-     *
-     * @param uin       被修改人的uin
-     * @param paramsMap 需要修改的Key-Value键值对
-     * @return 修改的状态返回
-     */
-    public Integer pushGeneralProfile(Long uin, Map<String, Object> paramsMap) {
-        // 如果入参为空,直接返回
-        if (!ObjectUtil.isEmpty(paramsMap)) {
-            // 提取传入的参数所有的非拓展类参数
-            Map<String, Object> originalParamsMap = profileParametersManager.getOriginalMapByMap(paramsMap);
-            // 执行更新方法的实现
-            return updateGeneralProfile(uin, originalParamsMap);
-        }
-        return Integer.MIN_VALUE;
-    }
-
-
-    /**
      * 更新用户Profile信息
      *
      * @param uin        用户Uin
@@ -178,30 +175,88 @@ public abstract class BaseProfileService {
      * @return 修改的处理状态
      */
     private Integer updateGeneralProfile(Long uin, Map<String, Object> parameters) {
+        Integer changerNumber = Integer.MIN_VALUE;
+        parameters.put("uin", uin);
+        Set<ProfileParametersMethod> needInvokeMethodSet = new HashSet<>();
+        Map<String, Object> spreedProfile = new HashMap<>();
+        Map<String, Object> verifyProfile = new HashMap<>();
+        // 对只读的Key进行处理
+        if (profileCanNotWrite) {
+            parameters = handlingProfileReadOnly(parameters);
+        }else{
+            profileCanNotWrite = true;
+        }
         // 对入参进行校验,如果为空，直接返回
         if (ObjectUtil.isEmpty(parameters)) {
             return Integer.MIN_VALUE;
         }
-        Integer changerNumber = 0;
-        parameters.put("uin",uin);
-        Set<ProfileParametersMethod> needInvokeMethodSet = new HashSet<>();
         // 遍历需要更新的参数Map
         for (String key : parameters.keySet()) {
             // 获取与Key相关的所有参数
+            // 如果这个Key是只读的,移除只读Key,不做修改
             ProfileParametersMethod profileParametersMethod = profileParametersManager.getProfileMethodParameterByKey(key);
             if (!ObjectUtil.isEmpty(profileParametersMethod)) {
                 needInvokeMethodSet.add(profileParametersMethod);
             }
+            // 分离需要验证的Key
+            if (profileParametersManager.checkProfileKeyIsVerify(key)) {
+                verifyProfile.put(key, parameters.get(key));
+            }
+            // 分离需要广播的Key
+            if (profileParametersManager.checkProfileKeyIsSpread(key)) {
+                spreedProfile.put(key, parameters.get(key));
+            }
         }
-        for (ProfileParametersMethod profileParametersMethod : needInvokeMethodSet) {
-            Object value = profileParametersManager.invokeMethod(profileParametersMethod, profileParametersMethod.getUpdateMethod(), parameters);
-            if (!ObjectUtil.isEmpty(value)) {
-                if (value instanceof Integer) {
-                    changerNumber += (Integer) value;
+        // 标记需要验证的Key的处理
+        if (handlingProfileVerify(verifyProfile)) {
+            for (ProfileParametersMethod profileParametersMethod : needInvokeMethodSet) {
+                Object value = profileParametersManager.invokeMethod(profileParametersMethod, profileParametersMethod.getUpdateMethod(), parameters);
+                if (!ObjectUtil.isEmpty(value)) {
+                    if (value instanceof Integer) {
+                        changerNumber += (Integer) value;
+                    }
                 }
             }
+            // 处理需要通知的Key
+            handlingProfileSpread(spreedProfile);
         }
         // 返回计算后的ProfileMap的值
         return changerNumber;
+    }
+
+
+    /**
+     * 执行通知的Profile的实现方法
+     *
+     * @param spreadProfileMap 需要通知的值的KeyMap
+     */
+    public abstract void handlingProfileSpread(Map<String, Object> spreadProfileMap);
+
+
+    /**
+     * 执行验证Profile的Map
+     *
+     * @param verifyProfileMap 需要验证的ProfileMap执行
+     */
+    public abstract boolean handlingProfileVerify(Map<String, Object> verifyProfileMap);
+
+
+    public void setProfileCanWrite() {
+        profileCanNotWrite = false;
+    }
+
+    /**
+     * 对只读profile的参数处理
+     *
+     * @param profileMap 对只读的Profile参数处理
+     */
+    private Map<String, Object> handlingProfileReadOnly(Map<String, Object> profileMap) {
+        Map<String, Object> newProfileMap = new HashMap<>();
+        profileMap.forEach((key, value) -> {
+            if (!profileParametersManager.checkProfileKeyIsSReadOnly(key)) {
+                newProfileMap.put(key, value);
+            }
+        });
+        return newProfileMap;
     }
 }

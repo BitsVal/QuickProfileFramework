@@ -36,8 +36,8 @@ public class ProfileMongoServiceImpl implements ProfileMongoService {
 
     @Override
     public Integer pushProfile(Long uin, Map<String, Object> paramsMap) {
-        System.out.println(uin);
-        System.out.println(paramsMap);
+        System.out.println("====== Profile =====");
+        System.out.println(uin+"->"+paramsMap);
         return 1;
     }
 }

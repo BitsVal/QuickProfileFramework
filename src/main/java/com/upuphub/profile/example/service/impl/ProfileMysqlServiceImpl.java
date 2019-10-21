@@ -26,8 +26,8 @@ public class ProfileMysqlServiceImpl implements ProfileMysqlService {
 
     @Override
     public Integer pushAccountStatus(Long uin, EmailTestBean emailTestBean) {
-        System.out.println(uin);
-        System.out.println(emailTestBean.getProfileEmail());
+        System.out.println("======== Email ========");
+        System.out.println(uin+"->"+emailTestBean.getProfileEmail());
         return 1;
     }
 }
