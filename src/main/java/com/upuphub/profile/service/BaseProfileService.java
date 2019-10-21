@@ -20,7 +20,14 @@ import java.util.*;
 public abstract class BaseProfileService {
     private static Logger LOGGER = LoggerFactory.getLogger(BaseProfileService.class);
 
+    /**
+     * 标记强制可写标志
+     */
     private boolean profileCanNotWrite = true;
+
+    /**
+     * Profile属性统一管理器
+     */
     private ProfileParametersManager profileParametersManager;
 
 
