@@ -1,6 +1,5 @@
+![](https://www.easyicon.net/download/png/1212479/225/)
 # QuickProfileFramework
-![](https://www.easyicon.net/download/svg/1212479/120/)
-</br>
 ![](https://img.shields.io/badge/author-LeoWang-purple)  ![](https://img.shields.io/badge/use-springboot-green) ![](https://img.shields.io/badge/build-passing-brightgreen) ![](https://img.shields.io/badge/version-0.0.1_SNAPSHOT-pink)  ![](https://img.shields.io/badge/license-Apache%202-blue)  ![](https://img.shields.io/badge/Dew-QuickProfike-yellow) ![](https://img.shields.io/badge/Content-isWangzl@aliyun.com-Red) ![](https://img.shields.io/badge/project-maven-orange)
 
 基于表驱动思想,实现的快捷查询转换Profile数据，可配置化的Profile数据信息信息
