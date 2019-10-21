@@ -42,7 +42,7 @@ public abstract class BaseProfileService {
      * @param keys 查询使用到的Key
      * @return 查询得到的返回结果
      */
-    public Map<String, Object> pullGeneralProfile(long uin, List<String> keys) {
+    public Map<String, Object> pullGeneralProfile(String uin, List<String> keys) {
         try {
             // 如果入参为空,直接返回
             if (null == keys || keys.isEmpty()) {
@@ -69,7 +69,7 @@ public abstract class BaseProfileService {
      * @param paramsMap 需要修改的Key-Value键值对
      * @return 修改的状态返回
      */
-    public Integer pushGeneralProfile(Long uin, Map<String, Object> paramsMap) {
+    public Integer pushGeneralProfile(String uin, Map<String, Object> paramsMap) {
         // 如果入参为空,直接返回
         if (!ObjectUtil.isEmpty(paramsMap)) {
             // 提取传入的参数所有的非拓展类参数
@@ -133,7 +133,7 @@ public abstract class BaseProfileService {
      * @param originalKeys 查询的Key
      * @return 查询结果的Map
      */
-    private Map<String, Object> pullOriginalProfileValue(long uin, List<String> originalKeys) throws IllegalAccessException, IntrospectionException, InvocationTargetException {
+    private Map<String, Object> pullOriginalProfileValue(String uin, List<String> originalKeys) throws IllegalAccessException, IntrospectionException, InvocationTargetException {
         // 对入参进行校验,如果为空，直接返回
         if (null == originalKeys || originalKeys.isEmpty()) {
             return Collections.emptyMap();
@@ -181,7 +181,7 @@ public abstract class BaseProfileService {
      * @param parameters 需要修改的Profile的参数
      * @return 修改的处理状态
      */
-    private Integer updateGeneralProfile(Long uin, Map<String, Object> parameters) {
+    private Integer updateGeneralProfile(String uin, Map<String, Object> parameters) {
         Integer changerNumber = Integer.MIN_VALUE;
         parameters.put("uin", uin);
         Set<ProfileParametersMethod> needInvokeMethodSet = new HashSet<>();

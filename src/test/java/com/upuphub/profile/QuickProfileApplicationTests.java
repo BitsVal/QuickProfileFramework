@@ -30,7 +30,7 @@ public class QuickProfileApplicationTests {
         profileList.add("name");
         profileList.add("age");
         profileList.add("email");
-        Map profileMap = profileService.pullGeneralProfile(10000L,profileList);
+        Map profileMap = profileService.pullGeneralProfile("10000",profileList);
         System.out.println(profileMap);
     }
 
@@ -41,7 +41,7 @@ public class QuickProfileApplicationTests {
         profileMap.put("name","ProfileName");
         profileMap.put("birthday",System.currentTimeMillis());
         profileService.setProfileCanWrite();
-        Integer hello = profileService.pushGeneralProfile(10000L,profileMap);
-        Integer hello1 = profileService.pushGeneralProfile(10000L,profileMap);
+        Integer hello = profileService.pushGeneralProfile("10000",profileMap);
+        Integer hello1 = profileService.pushGeneralProfile("10000",profileMap);
     }
 }
