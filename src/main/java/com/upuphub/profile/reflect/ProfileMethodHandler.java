@@ -146,6 +146,8 @@ public class ProfileMethodHandler {
                 return Float.valueOf(par);
             }
             return param;
+        }else if(clz.equals(String.class)){
+            return String.valueOf(param);
         }
         return param;
     }

@@ -31,13 +31,12 @@ public class ProfileSpringProviderBean {
     public void setServiceInterface(Class<?> serviceClass) {
         for (Method serviceClassMethod : serviceClass.getMethods()) {
             ProfileLoader profileLoader = serviceClassMethod.getAnnotation(ProfileLoader.class);
-            if (!ObjectUtil.isEmpty(profileLoader) && profileLoader.ignore()) {
-                continue;
-            }
             if (ObjectUtil.isEmpty(profileLoader) || ObjectUtil.isEmpty(profileLoader.value())) {
                 profileMethodMap.put(serviceClassMethod.getName(), serviceClassMethod);
             } else {
-                profileMethodMap.put(profileLoader.value(), serviceClassMethod);
+                if (!profileLoader.ignore()) {
+                    profileMethodMap.put(profileLoader.value(), serviceClassMethod);
+                }
             }
         }
     }
