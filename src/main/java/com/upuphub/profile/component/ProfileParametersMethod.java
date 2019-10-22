@@ -12,6 +12,7 @@ public class ProfileParametersMethod {
     private String insertMethod;
     private String updateMethod;
     private String deleteMethod;
+    private String initMethod;
 
     public String getServiceName() {
         return serviceName;
@@ -53,24 +54,29 @@ public class ProfileParametersMethod {
         this.deleteMethod = deleteMethod;
     }
 
+    public String getInitMethod() {
+        return initMethod;
+    }
+
+    public void setInitMethod(String initMethod) {
+        this.initMethod = initMethod;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof ProfileParametersMethod)){
-            return false;
-        }
+        if (this == o) return true;
+        if (!(o instanceof ProfileParametersMethod)) return false;
         ProfileParametersMethod that = (ProfileParametersMethod) o;
-        return Objects.equals(getServiceName(), that.getServiceName()) &&
+        return getServiceName().equals(that.getServiceName()) &&
                 Objects.equals(getSelectMethod(), that.getSelectMethod()) &&
                 Objects.equals(getInsertMethod(), that.getInsertMethod()) &&
                 Objects.equals(getUpdateMethod(), that.getUpdateMethod()) &&
-                Objects.equals(getDeleteMethod(), that.getDeleteMethod());
+                Objects.equals(getDeleteMethod(), that.getDeleteMethod()) &&
+                Objects.equals(getInitMethod(), that.getInitMethod());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getServiceName(), getSelectMethod(), getInsertMethod(), getUpdateMethod(), getDeleteMethod());
+        return Objects.hash(getServiceName(), getSelectMethod(), getInsertMethod(), getUpdateMethod(), getDeleteMethod(), getInitMethod());
     }
 }

@@ -40,4 +40,11 @@ public class ProfileMongoServiceImpl implements ProfileMongoService {
         System.out.println(uin+"->"+paramsMap);
         return 1;
     }
+
+    @Override
+    public Integer initProfile(Long uin, Map<String, Object> paramsMap) {
+        System.out.println("====== init Profile =====");
+        System.out.println(uin+"->"+ paramsMap );
+        return 1;
+    }
 }

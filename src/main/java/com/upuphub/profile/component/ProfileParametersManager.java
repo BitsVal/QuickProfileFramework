@@ -153,6 +153,9 @@ public class ProfileParametersManager {
         if (element.attribute(PROFILE_ATTRIBUTE_METHOD_DELETE) != null) {
             profileParametersMethod.setDeleteMethod(element.attribute(PROFILE_ATTRIBUTE_METHOD_DELETE).getValue());
         }
+        if (element.attribute(PROFILE_ATTRIBUTE_METHOD_INIT) != null) {
+            profileParametersMethod.setInitMethod(element.attribute(PROFILE_ATTRIBUTE_METHOD_INIT).getValue());
+        }
         LOGGER.debug("Load Profile [{}] Service Method ", serviceName);
         return profileParametersMethod;
     }
@@ -296,8 +299,8 @@ public class ProfileParametersManager {
             BaseProfileDefinition baseProfileDefinition = profileDefinitionMapper.get(key);
             // 没有配置在设定中的Key中,直接跳过
             if (!ObjectUtil.isEmpty(baseProfileDefinition)) {
-                if(baseProfileDefinition instanceof ProfileOriginalDefinition){
-                    originalParamsMap.put(key,value);
+                if (baseProfileDefinition instanceof ProfileOriginalDefinition) {
+                    originalParamsMap.put(key, value);
                 }
             }
         });
@@ -347,10 +350,10 @@ public class ProfileParametersManager {
     /**
      * 方法调用的实现
      *
-     * @param method 方法需要调用的方法
+     * @param method     方法需要调用的方法
      * @param methodName 方法的名称
-     * @param params 调用方法可能需要的参数
-     * @param allKeys 方法下所有的Key
+     * @param params     调用方法可能需要的参数
+     * @param allKeys    方法下所有的Key
      * @return 执行方法后的返回值
      */
     public Object invokeMethod(ProfileParametersMethod method, String methodName, Map<String, Object> params, List allKeys) {
@@ -368,51 +371,77 @@ public class ProfileParametersManager {
     /**
      * 方法调用的实现
      *
-     * @param method 方法需要调用的方法
+     * @param method     方法需要调用的方法
      * @param methodName 方法的名称
-     * @param params 调用方法可能需要的参数
+     * @param params     调用方法可能需要的参数
      * @return 执行方法后的返回值
      */
     public Object invokeMethod(ProfileParametersMethod method, String methodName, Map<String, Object> params) {
         // 分理出需要在该方法中需要查询的Key
         String uinKey = "uin";
         Set<String> paramsKeys = profileParametersMethodKeys.get(method);
-        Map<String,Object> paramsMap = new HashMap<>(paramsKeys.size());
-        if(params.containsKey(uinKey)){
-            paramsMap.put(uinKey,params.get(uinKey));
+        Map<String, Object> paramsMap = new HashMap<>(paramsKeys.size());
+        if (params.containsKey(uinKey)) {
+            paramsMap.put(uinKey, params.get(uinKey));
         }
         for (String paramsKey : paramsKeys) {
             if (params.containsKey(paramsKey)) {
-                paramsMap.put(paramsKey,params.get(paramsKey));
+                paramsMap.put(paramsKey, params.get(paramsKey));
             }
         }
-        return profileMethodHandler.invokeMethodByName(method.getServiceName(), methodName, paramsMap,Collections.emptyList());
+        return profileMethodHandler.invokeMethodByName(method.getServiceName(), methodName, paramsMap, Collections.emptyList());
     }
 
     /**
      * 校验Key是否是需要广播的
+     *
      * @param profileKey 需要校验的Key
      * @return Key的校验结果
      */
-    public boolean checkProfileKeyIsSpread(String profileKey){
+    public boolean checkProfileKeyIsSpread(String profileKey) {
         return needSpreadKeysSet.contains(profileKey);
     }
 
     /**
      * 校验Key是否是验证的
+     *
      * @param profileKey 需要校验的Key
      * @return Key的校验结果
      */
-    public boolean checkProfileKeyIsVerify(String profileKey){
+    public boolean checkProfileKeyIsVerify(String profileKey) {
         return needVerifyKeysSet.contains(profileKey);
     }
 
     /**
      * 校验Key是否是只读的
+     *
      * @param profileKey 需要校验的Key
      * @return Key的校验结果
      */
-    public boolean checkProfileKeyIsSReadOnly(String profileKey){
+    public boolean checkProfileKeyIsSReadOnly(String profileKey) {
         return readOnlyKeysSet.contains(profileKey);
+    }
+
+
+    /**
+     * 获取默认初始化方法,初始化方法的参数对应值
+     *
+     * @return 默认初始化方法,初始化方法的参数对应值
+     */
+    public Map<ProfileParametersMethod, Map<String, Object>> getAllInitMethodAndDefaultValue() {
+        Map<ProfileParametersMethod, Map<String, Object>> initMethodAndDefaultValueMap = new HashMap<>();
+        for (ProfileParametersMethod method : profileParametersMethodKeys.keySet()) {
+            if (!ObjectUtil.isEmpty(method.getInitMethod())) {
+                Map<String, Object> defaultValueMap = new HashMap<>();
+                for (String key : profileParametersMethodKeys.get(method)) {
+                    if (!ObjectUtil.isEmpty(key)) {
+                        String defaultValue = profileDefinitionMapper.get(key).getDefaultValue();
+                        defaultValueMap.put(key, defaultValue);
+                    }
+                }
+                initMethodAndDefaultValueMap.put(method, defaultValueMap);
+            }
+        }
+        return initMethodAndDefaultValueMap;
     }
 }

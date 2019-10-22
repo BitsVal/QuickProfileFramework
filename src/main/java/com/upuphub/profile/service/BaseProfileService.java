@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
@@ -76,6 +77,30 @@ public abstract class BaseProfileService {
             Map<String, Object> originalParamsMap = profileParametersManager.getOriginalMapByMap(paramsMap);
             // 执行更新方法的实现
             return updateGeneralProfile(uin, originalParamsMap);
+        }
+        return Integer.MIN_VALUE;
+    }
+
+
+    /**
+     * 初始化用户Profile信息
+     *
+     * @param uin       被修改人的uin
+     * @return 修改的状态返回
+     */
+    public Integer initGeneralProfile(String uin) {
+        // 如果入参为空,直接返回
+        AtomicInteger status = new AtomicInteger();
+        if(!ObjectUtil.isEmpty(uin)){
+            // 获取所有参数的初始化值
+            Map<ProfileParametersMethod,Map<String,Object>> initMethodAndDefaultValueMap = profileParametersManager.getAllInitMethodAndDefaultValue();
+            if(!ObjectUtil.isEmpty(initMethodAndDefaultValueMap)){
+                initMethodAndDefaultValueMap.forEach((method,keyMap)->{
+                    keyMap.put("uin",uin);
+                   status.addAndGet((Integer) profileParametersManager.invokeMethod(method, method.getInitMethod(), keyMap));
+                });
+            }
+            return status.get();
         }
         return Integer.MIN_VALUE;
     }

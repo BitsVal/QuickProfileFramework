@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <profiles>
 
-    <original service = "ProfileMongoService" selectMethod = "pullProfile" updateMethod="pushProfile">
+    <original service = "ProfileMongoService" selectMethod = "pullProfile" updateMethod="pushProfile" initMethod = "initProfile">
         <profile key="name" type="String" readonly="false" verify="true" default="微露用户" description="用户姓名" />
         <profile key="birthday" type="Long" readonly="false" spread = "true" default=""  description="用户生日"/>
     </original>

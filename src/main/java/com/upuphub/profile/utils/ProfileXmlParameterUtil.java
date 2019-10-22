@@ -14,6 +14,7 @@ public class ProfileXmlParameterUtil {
     public static final String PROFILE_ATTRIBUTE_METHOD_INSERT = "insertMethod";
     public static final String PROFILE_ATTRIBUTE_METHOD_UPDATE = "updateMethod";
     public static final String PROFILE_ATTRIBUTE_METHOD_DELETE = "deleteMethod";
+    public static final String PROFILE_ATTRIBUTE_METHOD_INIT = "initMethod";
     public static final String PROFILE_ATTRIBUTE_KEY = "key";
     public static final String PROFILE_ATTRIBUTE_TYPE = "type";
     public static final String PROFILE_ATTRIBUTE_READONLY = "readonly";

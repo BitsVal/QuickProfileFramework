@@ -44,4 +44,10 @@ public class QuickProfileApplicationTests {
         Integer hello = profileService.pushGeneralProfile("10000",profileMap);
         Integer hello1 = profileService.pushGeneralProfile("10000",profileMap);
     }
+
+    @Test
+    public void initProfileTest(){
+        Integer hello = profileService.initGeneralProfile("10000");
+        System.out.println();
+    }
 }
