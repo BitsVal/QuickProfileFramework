@@ -15,10 +15,10 @@ import java.util.Map;
  */
 
 
-public class ProfileSpringProviderBean{
+public class ProfileSpringProviderBean {
     private String serviceName;
     private Object target;
-    private Map<String,Method>  profileMethodMap;
+    private Map<String, Method> profileMethodMap;
 
     public ProfileSpringProviderBean() {
         this.profileMethodMap = new HashMap<>();
@@ -31,18 +31,22 @@ public class ProfileSpringProviderBean{
     public void setServiceInterface(Class<?> serviceClass) {
         for (Method serviceClassMethod : serviceClass.getMethods()) {
             ProfileLoader profileLoader = serviceClassMethod.getAnnotation(ProfileLoader.class);
-            if(ObjectUtil.isEmpty(profileLoader) || ObjectUtil.isEmpty(profileLoader.value())){
-                profileMethodMap.put(serviceClassMethod.getName(),serviceClassMethod);
-            }else {
-                profileMethodMap.put(profileLoader.value(),serviceClassMethod);
+            if (!ObjectUtil.isEmpty(profileLoader) && profileLoader.ignore()) {
+                continue;
+            }
+            if (ObjectUtil.isEmpty(profileLoader) || ObjectUtil.isEmpty(profileLoader.value())) {
+                profileMethodMap.put(serviceClassMethod.getName(), serviceClassMethod);
+            } else {
+                profileMethodMap.put(profileLoader.value(), serviceClassMethod);
             }
         }
     }
+
     public Method getServiceMethod(String methodName) {
-        if(profileMethodMap.containsKey(methodName)){
+        if (profileMethodMap.containsKey(methodName)) {
             return profileMethodMap.get(methodName);
-        }else{
-            throw new ProfileMethodNotFoundException(String.format("[%s.%s] Profile Method Not Found",serviceName,methodName));
+        } else {
+            throw new ProfileMethodNotFoundException(String.format("[%s.%s] Profile Method Not Found", serviceName, methodName));
         }
     }
 
@@ -63,8 +67,8 @@ public class ProfileSpringProviderBean{
         return profileMethodMap;
     }
 
-    public Method getMethodByMethodName(String methodName){
-        if(profileMethodMap.containsKey(methodName)){
+    public Method getMethodByMethodName(String methodName) {
+        if (profileMethodMap.containsKey(methodName)) {
             return profileMethodMap.get(methodName);
         }
         return null;

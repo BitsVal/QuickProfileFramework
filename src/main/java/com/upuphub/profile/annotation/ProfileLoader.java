@@ -12,4 +12,5 @@ import java.lang.annotation.*;
 @Documented
 public @interface ProfileLoader {
     String value() default "";
+    boolean ignore() default false;
 }
