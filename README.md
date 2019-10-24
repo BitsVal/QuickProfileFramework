@@ -3,13 +3,16 @@
 ![](https://img.shields.io/badge/author-LeoWang-purple)  ![](https://img.shields.io/badge/use-springboot-green) ![](https://img.shields.io/badge/build-passing-brightgreen) ![](https://img.shields.io/badge/version-0.0.1_SNAPSHOT-pink)  ![](https://img.shields.io/badge/license-Apache%202-blue)  ![](https://img.shields.io/badge/Dew-QuickProfike-yellow) ![](https://img.shields.io/badge/Content-isWangzl@aliyun.com-Red) ![](https://img.shields.io/badge/project-maven-orange)
 
 基于表驱动思想,实现的快捷查询转换Profile数据，可配置化的Profile数据信息信息
+> 1. 要啥查啥,Key-List输入 Map输出
+> 2. 单一入口,多数据源查询,可管理,易管控
+> 3. 免除冗余的查询配置,按需查询。
 ## 快速使用
 在Springboot项目中 pom文件引入
 ```xml
     <repositories>
         <repository>
             <id>LeoWangMavenRepository</id>
-            <url>https://github.com/isWangZL/LeoWangMavenRepository/master</url>
+            <url>https://raw.github.com/isWangZL/LeoWangMavenRepository/master</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
@@ -29,7 +32,7 @@
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <profiles>
-    <original service = "ProfileMongoService" selectMethod = "pullProfile" updateMethod="pushProfile">
+    <original service = "ProfileMongoService" initMethod = "initProfile" selectMethod = "pullProfile" updateMethod="pushProfile">
         <profile key="name" type="String" readonly="false" verify="true" default="微露用户" description="用户姓名" />
         <profile key="birthday" type="Long" readonly="false" spread = "true" default=""  description="用户生日"/>
     </original>
@@ -46,6 +49,7 @@
 * `<profiles></profiles>` 标签标识以下部分是Profile属性
 * `<original></original>` 标签标识的部分表示原始Profile数据类型
     * `service` Profile原始数据类型的执行方法名(标识)
+    * `initMethod` Profile原始数据的初始化方法，方法需要在以上配置的service中，并且会使用默认值属性作为参数值
     * `selectMethod` Profile原始数据类型的查询方法，方法需要在以上配置的service中
     * `updateMethod` Profile原始数据类型的修改方法，方法需要在以上配置的service中
     * `deleteMethod` Profile原始数据类型的删除方法，方法需要在以上配置的service中(待开发)
