@@ -2,10 +2,22 @@
 # QuickProfileFramework
 ![](https://img.shields.io/badge/author-LeoWang-purple)  ![](https://img.shields.io/badge/use-springboot-green) ![](https://img.shields.io/badge/build-passing-brightgreen) ![](https://img.shields.io/badge/version-0.0.1_SNAPSHOT-pink)  ![](https://img.shields.io/badge/license-Apache%202-blue)  ![](https://img.shields.io/badge/Dew-QuickProfike-yellow) ![](https://img.shields.io/badge/Content-isWangzl@aliyun.com-Red) ![](https://img.shields.io/badge/project-maven-orange)
 
-基于表驱动思想,实现的快捷查询转换Profile数据，可配置化的Profile数据信息信息
-> 1. 要啥查啥,Key-List输入 Map输出
+​	在平时的开发中,绝大多的软件系统应用都是围绕用户展开的,也就是说用户Profile信息的处理是一套软件系统的核心和关键所在。当一个软件系统的用户Profile信息存在以下一些问题的时候,后端开发对于Profile信息的处理就相对繁琐并且会做很多重复相似的工作。
+
+> 1. Profile数量众多,数据分散(ps:table_account_profile/table_verify_status/table_login_track)
+> 2.  应用前端对于用户信息的获取信息需求灵活,对于Profile字段信息的值灵活多变(ps:[api-a]:need{name,flagVerifyStatus}/[api-b]:need{name,lastLoginTime})
+> 3. 用户的Profile信息分散在多个数据源(ps:mysql/mongodb/...)
+> 4. 某些数据是可以通过其他的Profile属性可以通过其他的字段计算出来(ps:age/birthday profileCompletionLevel...)
+> 5. 对于Profile希望有可配置的限制(ps:readOnly/needSpreed/needVerify/...)
+> 6. ......
+
+为此QuickProfilFrameworke,基于Springboot自动注入配置，参考表驱动的实现,避免在庞大的查询修改中,需要繁琐冗杂的if else/switch case,可配置化的管理Profile信息。通过单一接口,实现要啥取啥。简单的配置管理复杂的Profile属性参数。
+
+> 1. 要啥查啥，List输入待查Profile属性, 查询结果Map统一输出
 > 2. 单一入口,多数据源查询,可管理,易管控
 > 3. 免除冗余的查询配置,按需查询。
+> 4. Profile参数免除冗余参数。可计算,可拓展
+> 5. ......
 ## 快速使用
 在Springboot项目中 pom文件引入
 ```xml
@@ -46,8 +58,8 @@
     </transfer>
 </profiles>
 ```
-* `<profiles></profiles>` 标签标识以下部分是Profile属性
-* `<original></original>` 标签标识的部分表示原始Profile数据类型
+* `<profiles></profiles>` Profile配置文件的开始，表示以下部分是Profile属性
+* `<original></original>` 标示原始Profile不可拓展的基础Profile数据
     * `service` Profile原始数据类型的执行方法名(标识)
     * `initMethod` Profile原始数据的初始化方法，方法需要在以上配置的service中，并且会使用默认值属性作为参数值
     * `selectMethod` Profile原始数据类型的查询方法，方法需要在以上配置的service中
@@ -67,8 +79,10 @@
     * `transMethod` 拓展类属性的Profile的转换方法(只能在transfer中使用)
 
 ## Profile-Spring自动扫描配置
-配置文件中配置ProfileXml文件地址
-> profiles.config.xmlPath: profiles.config.xmlPath: classpath:/profile/ProfileTemplate.xml
+在application配置文件中配置ProfileXml文件地址
+> profiles.config.xmlPath:  classpath:/profile/ProfileTemplate.xml
+准备QuickProfile配置类,扫描Profile参数服务的Service
+
 ```java
 // Profile 服务执行方法的自动扫描包路径
 @ProfileServiceScan(basePackages = "com.upuphub.profile.example.service")
@@ -85,8 +99,8 @@ public class QuickProfileConfig {
 }
 ```
 
-## Profile的使用Service
-使用QuickProfileService需要实现BaseProfileService
+## QuickProfileService的准备和使用
+使用QuickProfileService需要实现BaseProfileService,并作为SpringBean 注册到SpringBean容器中
 ```java
 @Service
 public class ProfileService extends BaseProfileService {
@@ -129,6 +143,9 @@ public class ProfileService extends BaseProfileService {
 
 以下是Profile方法的使用示例
 #### Key-Value 类型的Nosql数据库
+
+定义接口
+
 ```java
 /**
  * @author Leo Wang
@@ -158,6 +175,7 @@ public interface ProfileMongoService {
     Integer pushProfile(@ProfileParam("uin") Long uin,@ProfileParam(needMap = true) Map<String,Object> paramsMap);
 }
 ```
+接口实现
 ```java
 
 /**
@@ -284,12 +302,12 @@ public class ProfileTransferServiceImpl implements ProfileTransferService {
 }
 ```
 
-## 使用和测试
+## QuickProfile的使用和测试示例
 ```java
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class QuickProfileApplicationTests {
-
+    
     @Autowired
     BaseProfileService profileService;
 
@@ -299,27 +317,31 @@ public class QuickProfileApplicationTests {
 
     @Test
     public void pullProfileTest(){
+        // 模拟拉取不同数据数据源中,包含扩展计算类的Profile参数属性
         List<String> profileList = new ArrayList<>();
+        // MongoDB中的Name
         profileList.add("name");
+        // 计算参数age
         profileList.add("age");
+        // Mysql中的Email
         profileList.add("email");
+        // 调用拉取方法
         Map profileMap = profileService.pullGeneralProfile(10000L,profileList);
         System.out.println(profileMap);
     }
 
     @Test
     public void pushProfileTest(){
+        // 模拟修改不同数据源中的Profile属性
         Map<String,Object> profileMap= new HashMap<>();
+        // Mysql中的email
         profileMap.put("email","QuickProfile@upuphub.com");
+        // MongoDB中的Name和Birthday
         profileMap.put("name","ProfileName");
         profileMap.put("birthday",System.currentTimeMillis());
         profileService.setProfileCanWrite();
-        profileService.pushGeneralProfile(10000L,profileMap);
+        // 调用更新方法
         profileService.pushGeneralProfile(10000L,profileMap);
     }
 }
 ```
-    
-    
-  
-
