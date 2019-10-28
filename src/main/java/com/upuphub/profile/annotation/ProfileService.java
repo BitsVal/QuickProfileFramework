@@ -4,6 +4,8 @@ package com.upuphub.profile.annotation;
 import java.lang.annotation.*;
 
 /**
+ * 标识Profile属性参数
+ *
  * @author Leo Wang
  * @version 1.0
  * @date 2019/10/15 19:59

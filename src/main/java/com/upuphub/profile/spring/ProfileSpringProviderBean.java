@@ -9,15 +9,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * ProfileService对象和方法属性的管理提供基础类
+ *
  * @author Leo Wang
  * @version 1.0
  * @date 2019/10/15 19:59
  */
-
-
 public class ProfileSpringProviderBean {
+    /**
+     * Spring Profile Service Name
+     */
     private String serviceName;
+
+    /**
+     * Spring Profile Service Target Object
+     */
     private Object target;
+
+    /**
+     * Target Object Method Name and Method Object Map
+     */
     private Map<String, Method> profileMethodMap;
 
     public ProfileSpringProviderBean() {

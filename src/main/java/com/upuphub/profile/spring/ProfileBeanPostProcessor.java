@@ -14,6 +14,8 @@ import org.springframework.beans.factory.config.InstantiationAwareBeanPostProces
 
 
 /**
+ * ProfileBean 方法加载的后处理
+ *
  * @author Leo Wang
  * @version 1.0
  * @date 2019/10/15 19:59
@@ -21,7 +23,15 @@ import org.springframework.beans.factory.config.InstantiationAwareBeanPostProces
 public class ProfileBeanPostProcessor extends InstantiationAwareBeanPostProcessorAdapter implements InitializingBean, BeanFactoryAware {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileBeanPostProcessor.class);
 
+    /**
+     * Spring Bean 工厂
+     */
     private BeanFactory beanFactory;
+
+
+    /**
+     * 自动扫描的Spring Profile General Service 的服务统一管理器
+     */
     private ProfileGeneralServiceManager profileGeneralServiceManager;
 
     @Override
@@ -30,9 +40,10 @@ public class ProfileBeanPostProcessor extends InstantiationAwareBeanPostProcesso
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet(){
         // 执行加载
         profileGeneralServiceManager = beanFactory.getBean(ProfileGeneralServiceManager.class);
+        LOGGER.debug("Create ProfileGeneralServiceManage Bean");
     }
 
     @Override
@@ -51,6 +62,7 @@ public class ProfileBeanPostProcessor extends InstantiationAwareBeanPostProcesso
                     profileGeneralServiceManager.setProfileSpringProviderBeans(profileService.value(),(ProfileSpringProviderBean) bean);
                 }
             }
+            LOGGER.debug("Init Profile General Service Manager {}",profileService.value());
         }
         return bean;
     }
@@ -58,7 +70,9 @@ public class ProfileBeanPostProcessor extends InstantiationAwareBeanPostProcesso
     @Override
     public boolean postProcessAfterInstantiation(Object bean, String beanName) throws BeansException {
         if(bean instanceof ProfileMethodHandler){
+            // 后处理器初始化Profile方法处理执行器
             ((ProfileMethodHandler) bean).setProfileGeneralServiceManager(profileGeneralServiceManager);
+            LOGGER.debug("Init ProfileMethodHandler Success {}'s Bean",profileGeneralServiceManager.getProfileSpringProviderBeans().size());
         }
         return super.postProcessAfterInstantiation(bean, beanName);
     }

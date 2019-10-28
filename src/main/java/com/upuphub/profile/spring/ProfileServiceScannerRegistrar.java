@@ -36,6 +36,8 @@ import static com.upuphub.profile.utils.ProfileXmlParameterUtil.FILTER_ATTRIBUTE
 import static org.springframework.core.io.support.ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX;
 
 /**
+ * ProfileService的扫描注册器
+ *
  * @author Leo Wang
  * @version 1.0
  * @date 2019/10/15 19:59
@@ -71,7 +73,7 @@ public class ProfileServiceScannerRegistrar implements ImportBeanDefinitionRegis
         // 扫描包信息,加载到Profile-Service类信息
         List<Class<?>> candidates = scanPackages(basePackages, includeFilters, excludeFilters);
         if (candidates.isEmpty()) {
-            LOGGER.info("扫描指定PROFILE-SERVICE基础包[{}]时未发现复合条件的基础类", Arrays.toString(basePackages));
+            LOGGER.info("The base class for the composite condition was not found when scanning the specified PROFILE-SERVICE base package [{}]", Arrays.toString(basePackages));
             return;
         }
         //注册PROFILE-SERVICE后处理器,为PROFILE对象注入执行环境配置信息
@@ -120,7 +122,7 @@ public class ProfileServiceScannerRegistrar implements ImportBeanDefinitionRegis
                 // 遍历加载相应的类信息
                 candidates.addAll(findCandidateClasses(pkg, includeFilters, excludeFilters));
             } catch (IOException e) {
-                LOGGER.error("扫描指定Profile-Service基础包[{}]时出现异常", pkg);
+                LOGGER.error("An exception occurred while scanning the specified Profile-Service base package [{}]", pkg);
             }
         }
         return candidates;
@@ -135,7 +137,7 @@ public class ProfileServiceScannerRegistrar implements ImportBeanDefinitionRegis
      */
     private List<Class<?>> findCandidateClasses(String basePackage, List<TypeFilter> includeFilters, List<TypeFilter> excludeFilters) throws IOException {
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("开始扫描指定包{}下的所有类" + basePackage);
+            LOGGER.debug("Start scanning all classes under the specified package {}" + basePackage);
         }
         List<Class<?>> candidates = new ArrayList<Class<?>>();
         String packageSearchPath = CLASSPATH_ALL_URL_PREFIX + replaceDotByDelimiter(basePackage) + '/' + RESOURCE_PATTERN;
@@ -148,7 +150,7 @@ public class ProfileServiceScannerRegistrar implements ImportBeanDefinitionRegis
                 Class<?> candidateClass = transform(reader.getClassMetadata().getClassName());
                 if (candidateClass != null) {
                     candidates.add(candidateClass);
-                    LOGGER.debug("扫描到符合要求PROFILE-SERVICE基础类:{}" + candidateClass.getName());
+                    LOGGER.debug("Scan to meet the requirements of the PROFILE-SERVICE base class:{}" + candidateClass.getName());
                 }
             }
         }
@@ -168,7 +170,7 @@ public class ProfileServiceScannerRegistrar implements ImportBeanDefinitionRegis
         for (Class<?> clazz : internalClasses) {
             // 判断重复加载
             if (PROFILE_UNDERLYING_MAPPING.containsValue(clazz)) {
-                LOGGER.debug("重复扫描{}类,忽略重复注册", clazz.getName());
+                LOGGER.debug("Repeat the scan of the {} class, ignoring duplicate registrations", clazz.getName());
                 continue;
             }
             // 获取新创建ProfileBeanName
@@ -176,7 +178,7 @@ public class ProfileServiceScannerRegistrar implements ImportBeanDefinitionRegis
             RootBeanDefinition rbd = new RootBeanDefinition(ProfileSpringProviderBean.class);
             registry.registerBeanDefinition(beanName, rbd);
             if (registerSpringBean(clazz)) {
-                LOGGER.debug("注册Profile-Service[{}]Bean", clazz.getName());
+                LOGGER.debug("register ProfileServiceBean {}", clazz.getName());
                 registry.registerBeanDefinition(ClassUtils.getShortNameAsProperty(clazz), new RootBeanDefinition(clazz));
             }
             PROFILE_UNDERLYING_MAPPING.put(beanName, clazz);
@@ -270,7 +272,7 @@ public class ProfileServiceScannerRegistrar implements ImportBeanDefinitionRegis
             switch (filterType) {
                 case ANNOTATION:
                     Assert.isAssignable(Annotation.class, filterClass,
-                            "@ProfileServiceScan 注解类型的Filter必须指定一个注解");
+                            "@ProfileServiceScan:An annotation type of Filter must specify an annotation");
                     Class<Annotation> annotationType = (Class<Annotation>) filterClass;
                     typeFilters.add(new AnnotationTypeFilter(annotationType));
                     break;
@@ -279,12 +281,12 @@ public class ProfileServiceScannerRegistrar implements ImportBeanDefinitionRegis
                     break;
                 case CUSTOM:
                     Assert.isAssignable(TypeFilter.class, filterClass,
-                            "@ProfileServiceScan 自定义Filter必须实现TypeFilter接口");
+                            "@ProfileServiceScan:Custom Filter must implement TypeFilter interface");
                     TypeFilter filter = BeanUtils.instantiateClass(filterClass, TypeFilter.class);
                     typeFilters.add(filter);
                     break;
                 default:
-                    throw new IllegalArgumentException("当前TypeFilter不支持: " + filterType);
+                    throw new IllegalArgumentException("Current TypeFilter does not support" + filterType);
             }
         }
         return typeFilters;
@@ -346,6 +348,7 @@ public class ProfileServiceScannerRegistrar implements ImportBeanDefinitionRegis
 
     /**
      * 转为ClassName对Class对象
+     *
      * @param className 类名称
      * @return 类对象
      */
@@ -354,13 +357,14 @@ public class ProfileServiceScannerRegistrar implements ImportBeanDefinitionRegis
         try {
             clazz = ClassUtils.forName(className, this.getClass().getClassLoader());
         } catch (ClassNotFoundException e) {
-            LOGGER.info("未找到指定Profile-Service基础类{}",className);
+            LOGGER.info("The specified Profile-Service base class was not found{}",className);
         }
         return clazz;
     }
 
     /**
      * 加载排除拦截器
+     *
      * @param annAttrs 扫描注册信息
      * @return 排除拦截器的对象列表
      */
@@ -385,6 +389,7 @@ public class ProfileServiceScannerRegistrar implements ImportBeanDefinitionRegis
 
     /**
      * 获取Profile-Service类对象
+     *
      * @param profileBeanName 类名称
      * @return 类对象
      */

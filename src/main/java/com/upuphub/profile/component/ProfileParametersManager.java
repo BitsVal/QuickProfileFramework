@@ -18,6 +18,10 @@ import java.util.*;
 import static com.upuphub.profile.utils.ProfileXmlParameterUtil.*;
 
 /**
+ * Parameter management object after loading the ProfileXML file
+ * Unified management of the parameter properties of the configuration in
+ *  ProfileXML and the bean name of the calling service and the methods that need to be executed for the parameter object
+ *
  * @author Leo Wang
  * @version 1.0
  * @date 2019/10/16 00:06

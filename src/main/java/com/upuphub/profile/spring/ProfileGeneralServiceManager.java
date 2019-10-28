@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * ProfileService 的Bean 服务管理器
+ *
  * @author Leo Wang
  * @version 1.0
  * @date 2019/10/16 23:18
@@ -17,11 +19,11 @@ public class ProfileGeneralServiceManager {
     private Map<String, ProfileSpringProviderBean> profileSpringProviderBeans = new HashMap<>();
 
 
-    public void setProfileSpringProviderBeans(String serviceName, ProfileSpringProviderBean profileSpringProviderBean) {
+    void setProfileSpringProviderBeans(String serviceName, ProfileSpringProviderBean profileSpringProviderBean) {
         profileSpringProviderBeans.put(serviceName, profileSpringProviderBean);
     }
 
-    public Map<String, ProfileSpringProviderBean> getProfileSpringProviderBeans() {
+    Map<String, ProfileSpringProviderBean> getProfileSpringProviderBeans() {
         return profileSpringProviderBeans;
     }
 

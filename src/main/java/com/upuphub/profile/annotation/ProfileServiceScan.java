@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Import;
 import java.lang.annotation.*;
 
 /**
+ * ProfileService的自动扫描类
+ *
  * @author Leo Wang
  * @version 1.0
  * @date 2019/10/15 19:59

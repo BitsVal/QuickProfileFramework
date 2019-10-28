@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ClassUtils;
 
 /**
+ * 扫描ProfileService的类型过滤器
+ *
  * @author Leo Wang
  * @version 1.0
  * @date 2019/10/15 19:59
@@ -27,7 +29,7 @@ public class ProfileServiceTypeFilter extends AbstractClassTestingTypeFilter {
         }
         ProfileService profileService = clazz.getAnnotation(ProfileService.class);
         if (profileService.registerBean() && isAnnotatedBySpring(clazz)) {
-            throw new IllegalStateException("类{" + clazz.getName() + "}已经标识了Spring组件注解,不能再指定[registerBean = true]");
+            throw new IllegalStateException("Class{" + clazz.getName() + "}:The Spring component annotation has been identified and can no longer be specified [registerBean = true]");
         }
         //过滤抽象类,接口,注解,枚举,内部类及匿名类
         return !metadata.isAbstract() && !clazz.isInterface() && !clazz.isAnnotation() && !clazz.isEnum()
@@ -45,7 +47,7 @@ public class ProfileServiceTypeFilter extends AbstractClassTestingTypeFilter {
         try {
             clazz = ClassUtils.forName(className, this.getClass().getClassLoader());
         } catch (ClassNotFoundException e) {
-            LOGGER.info("未找到指定基础类{}", className);
+            LOGGER.info("The specified base class was not found{}", className);
         }
         return clazz;
     }

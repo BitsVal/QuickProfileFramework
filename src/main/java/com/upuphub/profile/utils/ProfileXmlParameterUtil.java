@@ -1,6 +1,8 @@
 package com.upuphub.profile.utils;
 
 /**
+ * 解析XML中的参数标签的参数
+ *
  * @author Leo Wang
  * @version 1.0
  * @date 2019/10/15 19:59

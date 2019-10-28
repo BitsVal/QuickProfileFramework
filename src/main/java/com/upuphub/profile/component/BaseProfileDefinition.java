@@ -4,6 +4,8 @@ import java.util.Objects;
 
 
 /**
+ * The element object of the core ProfileXML transformation property loaded
+ *
  * @author Leo Wang
  * @version 1.0
  * @date 2019/10/16 00:06

@@ -1,6 +1,6 @@
 package com.upuphub.profile.example.bean;
 
-import com.upuphub.profile.annotation.ProfileBeanParam;
+import com.upuphub.profile.annotation.ProfileBeanField;
 
 /**
  * @author Leo Wang
@@ -9,7 +9,7 @@ import com.upuphub.profile.annotation.ProfileBeanParam;
  */
 
 public class EmailTestBean {
-    @ProfileBeanParam("email")
+    @ProfileBeanField("email")
     private String profileEmail;
 
     private boolean verifyFlag;

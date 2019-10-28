@@ -3,6 +3,8 @@ package com.upuphub.profile.component;
 import java.util.Objects;
 
 /**
+ * PParameter object of the original base object loaded by rofileXML
+ *
  * @author Leo Wang
  * @version 1.0
  * @date 2019/10/16 00:06

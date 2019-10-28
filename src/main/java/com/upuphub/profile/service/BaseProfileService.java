@@ -14,6 +14,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
+ * Quick Profile Service Core Abstract Class
+ * All profiles need to implement this abstract class, which is the entry point for Quick Profile.
+ *
  * @author Leo Wang
  * @version 1.0
  * @date 2019/9/18 21:07

@@ -2,6 +2,8 @@ package com.upuphub.profile.component;
 
 import java.util.Objects;
 /**
+ * The Profile property requires the basic elements of the method to be executed.
+ *
  * @author Leo Wang
  * @version 1.0
  * @date 2019/10/16 00:06

@@ -1,6 +1,6 @@
 package com.upuphub.profile.utils;
 
-import com.upuphub.profile.annotation.ProfileBeanParam;
+import com.upuphub.profile.annotation.ProfileBeanField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,9 +48,9 @@ public class BeanUtil {
             if("class".equals(propertyName)){
                 continue;
             }
-            ProfileBeanParam profileBeanParam =type.getDeclaredField(propertyName).getAnnotation(ProfileBeanParam.class);
-            if (!ObjectUtil.isEmpty(profileBeanParam) && !ObjectUtil.isEmpty(profileBeanParam.value())) {
-                propertyName = profileBeanParam.value();
+            ProfileBeanField profileBeanField =type.getDeclaredField(propertyName).getAnnotation(ProfileBeanField.class);
+            if (!ObjectUtil.isEmpty(profileBeanField) && !ObjectUtil.isEmpty(profileBeanField.value())) {
+                propertyName = profileBeanField.value();
             }
             if (map.containsKey(propertyName)) {
                 // 下面一句可以 try 起来，这样当一个属性赋值失败的时候就不会影响其他属性赋值。
@@ -60,6 +60,7 @@ public class BeanUtil {
                 descriptor.getWriteMethod().invoke(obj, args);
             }
         }
+        LOGGER.debug("Convert Map To Bean Object");
         return obj;
     }
 
@@ -98,6 +99,7 @@ public class BeanUtil {
                 }
             }
         }
+        LOGGER.debug("Convert Bean To Map Object");
         return returnMap;
     }
 }
