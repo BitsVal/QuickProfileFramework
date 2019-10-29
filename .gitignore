@@ -4,6 +4,7 @@ mvnw.cmd
 mvnw
 HELP.md
 QuickProfileFramework.iml
+quick-profile.iml
 target/
 # Compiled class file
 *.class
