@@ -210,7 +210,7 @@ public abstract class BaseProfileService {
      * @return 修改的处理状态
      */
     private Integer updateGeneralProfile(String uin, Map<String, Object> parameters) {
-        Integer changerNumber = Integer.MIN_VALUE;
+        Integer changerNumber = 0;
         parameters.put("uin", uin);
         Set<ProfileParametersMethod> needInvokeMethodSet = new HashSet<>();
         Map<String, Object> spreedProfile = new HashMap<>();
