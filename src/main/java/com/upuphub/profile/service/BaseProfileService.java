@@ -211,10 +211,12 @@ public abstract class BaseProfileService {
      */
     private Integer updateGeneralProfile(String uin, Map<String, Object> parameters) {
         Integer changerNumber = 0;
-        parameters.put("uin", uin);
         Set<ProfileParametersMethod> needInvokeMethodSet = new HashSet<>();
         Map<String, Object> spreedProfile = new HashMap<>();
         Map<String, Object> verifyProfile = new HashMap<>();
+        parameters.put("uin", uin);
+        spreedProfile.put("uin", uin);
+        verifyProfile.put("uin", uin);
         // 对只读的Key进行处理
         if (profileCanNotWrite) {
             parameters = handlingProfileReadOnly(parameters);
