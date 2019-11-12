@@ -8,7 +8,7 @@
         <version>2.1.9.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.upuphub.profile</groupId>
+    <groupId>com.upuphub</groupId>
     <artifactId>quick-profile</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>QuickProfileFramework</name>
