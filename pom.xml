@@ -2,27 +2,59 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.9.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
+
+
     <groupId>com.upuphub</groupId>
     <artifactId>quick-profile</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+
     <name>QuickProfileFramework</name>
-    <description>QuickProfileFramework</description>
+    <url>https://github.com/isWangZL/QuickProfileFramework</url>
+    <description>QuickProfileFramework for Java,基于Springboot自动注入配置，参考表驱动的思想，避免在庞大的查询修改中,需要繁琐冗杂的if else/switch
+        case,可配置化的管理Profile信息。通过单一接口,实现要啥取啥。简单的配置管理复杂的Profile属性参数。
+    </description>
+
+    <!--licenses信息-->
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <!--scm信息-->
+    <scm>
+        <tag>Master</tag>
+        <url>git@github.com:isWangZL/QuickProfileFramework.git</url>
+        <connection>scm:git@github.com:isWangZL/QuickProfileFramework.git</connection>
+        <developerConnection>scm:git@github.com:isWangZL/QuickProfileFramework.git</developerConnection>
+    </scm>
+
+    <!--发布者信息-->
+    <developers>
+        <developer>
+            <name>Leo Wang</name>
+            <email>isWangzl@aliyun.com</email>
+            <organization>http://upuphub.com</organization>
+            <organizationUrl>upuphub.com</organizationUrl>
+        </developer>
+    </developers>
 
     <properties>
         <java.version>1.8</java.version>
         <github.global.server>github</github.global.server>
+        <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
+            <version>2.1.9.RELEASE</version>
+            <optional>true</optional>
         </dependency>
         <!-- dom4j -->
         <dependency>
@@ -34,22 +66,14 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <version>2.1.9.RELEASE</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
-        <!--<plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-        </plugins>-->
-
+        <!--
+        &lt;!&ndash; Github 个人仓库打包插件 &ndash;&gt;
         <plugins>
             <plugin>
                 <artifactId>maven-deploy-plugin</artifactId>
@@ -67,14 +91,14 @@
                 <configuration>
                     <message>Maven artifacts for ${project.version}</message>
                     <noJekyll>true</noJekyll>
-                    <outputDirectory>${project.build.directory}/LeoWangMavenRepository</outputDirectory><!--本地jar地址-->
-                    <branch>refs/heads/master</branch><!--分支的名称-->
+                    <outputDirectory>${project.build.directory}/LeoWangMavenRepository</outputDirectory>&lt;!&ndash;本地jar地址&ndash;&gt;
+                    <branch>refs/heads/master</branch>&lt;!&ndash;分支的名称&ndash;&gt;
                     <merge>true</merge>
                     <includes>
                         <include>**/*</include>
                     </includes>
-                    <repositoryName>LeoWangMavenRepository</repositoryName><!--对应github上创建的仓库名称 name-->
-                    <repositoryOwner>isWangzl</repositoryOwner><!--github 仓库所有者即登录用户名-->
+                    <repositoryName>LeoWangMavenRepository</repositoryName>&lt;!&ndash;对应github上创建的仓库名称 name&ndash;&gt;
+                    <repositoryOwner>isWangzl</repositoryOwner>&lt;!&ndash;github 仓库所有者即登录用户名&ndash;&gt;
                 </configuration>
                 <executions>
                     <execution>
@@ -86,5 +110,95 @@
                 </executions>
             </plugin>
         </plugins>
+-->
+        <pluginManagement>
+            <plugins>
+                <!-- doc plugin,Maven API文档生成插件 -->
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.1.0</version>
+                    <executions>
+                        <execution>
+                            <id>attach-javadocs</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- resources plugin,Maven 资源插件 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.1.0</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <goals>
+                                <goal>jar-no-fork</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- compiler plugin,Maven 编译插件 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.3</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                        <showWarnings>true</showWarnings>
+                    </configuration>
+                </plugin>
+                <!-- gpg plugin,用于签名认证 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>1.6</version>
+                    <executions>
+                        <execution>
+                            <id>sign-artifacts</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>sign</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!--staging puglin,用于自动执行发布阶段(免手动)-->
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>1.6.7</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <serverId>ossrh</serverId>
+                        <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                        <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                    </configuration>
+                </plugin>
+                <!-- release plugin,用于发布到release仓库部署插件 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.4.2</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
+
+    <!-- 这里引入 Settings.xml 中设置的用户名、密码 -->
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 </project>
