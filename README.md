@@ -19,7 +19,16 @@
 > 4. Profile参数免除冗余参数。可计算,可拓展
 > 5. ......
 ## 快速使用
-在Springboot项目中 pom文件引入
+仓库上传到 https://search.maven.org/中,在Springboot项目使用中,pom文件引入
+* 中央仓库版
+```xml
+<dependency>
+    <groupId>com.upuphub</groupId>
+    <artifactId>quick-profile</artifactId>
+    <version>0.0.1</version>
+</dependency>
+```
+* GitHub开发版
 ```xml
     <repositories>
         <repository>
